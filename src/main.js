@@ -1,13 +1,13 @@
 import * as utils from "./utils.js";
 
-const canvasWidth = 400, canvasHeight = 300;
-let ctx, n = 0, fps = 120;
+var canvasWidth = 400, canvasHeight = 300;
+var ctx, n = 0, fps = 1000;
 
-const divergence = 137.5;
-let c = 2;
-const hValue = 361;
+var divergence = 137.5;
+var c = 2;
+var hValue = 361;
 
-let offsetX = 0, offsetY = 0;
+var offsetX = 0, offsetY = 0;
 
 function init() {
     ctx = canvas.getContext("2d");
@@ -35,13 +35,13 @@ function loop() {
     // `a` is the angle
     // `r` is the radius from the center (e.g. "Pole") of the flower
     // `c` is the "padding/spacing" between the dots
-    let a = n * utils.dtr(divergence);
-    let r = c * Math.sqrt(n);
+    var a = n * utils.dtr(divergence);
+    var r = c * Math.sqrt(n);
     //console.log(a, r);
 
     // now calculate the `x` and `y`
-    let x = r * Math.cos(a) + canvasWidth / 2 + offsetX;
-    let y = r * Math.sin(a) + canvasHeight / 2 + offsetY;
+    var x = r * Math.cos(a) + canvasWidth / 2 + offsetX;
+    var y = r * Math.sin(a) + canvasHeight / 2 + offsetY;
     //console.log(x, y);
 
     //let color = `rgb(${n % 256},0,255)`;
@@ -49,8 +49,8 @@ function loop() {
     //let aDegrees = (n * divergence) % 256;
     // let color = `rgb(${aDegrees},0,255)`;
 
-    let bDegrees = (n * divergence) % hValue;
-    let color = `hsla(${bDegrees},100%,50%, 0.5)`;
+    var bDegrees = (n * divergence) % hValue;
+    var color = `hsla(${bDegrees},100%,50%, 0.5)`;
     utils.drawCircle(ctx, x, y, 2, color);
 
     color = `hsla(${n/5 % hValue},100%,50%, 0.5)`;
