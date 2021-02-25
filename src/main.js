@@ -14,12 +14,10 @@ function init() {
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
-    loop();
+    window.requestAnimationFrame(loop);
 }
 
 function loop() {
-    setTimeout(loop, 1000 / fps);
-
     //Reset when n reaches 1500
     if(n > 1500)
     {
@@ -59,6 +57,7 @@ function loop() {
 
     n++;
     c += 0.001;
+    window.requestAnimationFrame(loop);
 }
 
 export {init};
