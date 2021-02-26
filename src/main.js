@@ -9,7 +9,7 @@ var divergence = 137.5;
 var c = 2;
 var hValue = 361;
 var offsetX = 0, offsetY = 0;
-var repeater = 30;
+var repeater = 10;
 
 //Audio Variables
 const DEFAULTS = Object.freeze({
@@ -27,7 +27,7 @@ function init() {
     //Audio
 	setupUI(canvas);
 
-    //window.requestAnimationFrame(loop);
+    window.requestAnimationFrame(loop);
 }
 
 function setupUI(canvasElement){
@@ -88,8 +88,8 @@ function loop() {
             n = 0;
             c = 2;
             //Pick a random spot near the center
-            offsetX = utils.getRandomInt(-100, 100);
-            offsetY = utils.getRandomInt(-100, 100);
+            //offsetX = utils.getRandomInt(-100, 100);
+            //offsetY = utils.getRandomInt(-100, 100);
         }
 
         // each frame draw a new dot
