@@ -18,7 +18,7 @@ const DEFAULTS = Object.freeze({
 
 function init() {
     audio.setupWebaudio(DEFAULTS.sound1);
-    var canvas = document.querySelector('canvas');
+    let canvas = document.querySelector('canvas');
     ctx = canvas.getContext("2d");
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
@@ -26,6 +26,8 @@ function init() {
 
     //Audio
 	setupUI(canvas);
+
+    audio.audioCtx.suspend();
 
     window.requestAnimationFrame(loop);
 }
@@ -43,12 +45,12 @@ function setupUI(canvasElement){
     var playButton = document.querySelector('#playButton');
     playButton.onclick = e => {
         console.log(`audioCtx.state before = ${audio.audioCtx.state}`);
-        if(audio.audioCtx.state == "suspended")
+        if(audio.audioCtx.state == 'suspended')
         {
             audio.audioCtx.resume();
         }
         console.log(`audioCtx.state after = ${audio.audioCtx.state}`);
-        if(e.target.dataset.playing == "no")
+        if(e.target.dataset.playing === "no")
         {
             audio.playCurrentSound();
             e.target.dataset.playing = "yes";

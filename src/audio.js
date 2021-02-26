@@ -53,6 +53,7 @@ function setupWebaudio(filePath) {
 
     // 8 - connect the nodes - we now have an audio graph
     sourceNode.connect(analyserNode);
+    analyserNode.connect(gainNode);
     gainNode.connect(audioCtx.destination);
 }
 
