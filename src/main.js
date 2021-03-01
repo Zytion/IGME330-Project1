@@ -19,6 +19,8 @@ let colorChosen = "rainbow";
 let loopNum = 3;
 let nMax = 400;
 
+let audioData;
+let analyserNode; 
 //Audio Variables
 const DEFAULTS = Object.freeze({
     sound1: "media/Unknown.mp3"
