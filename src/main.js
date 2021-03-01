@@ -88,7 +88,10 @@ function setupUI(canvasElement) {
 
     let patternSelect = document.querySelector("#patternSelect");
     patternSelect.onchange = e => {
-        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        ctx.save();
+        ctx.fillColor = 'black';
+        ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+        ctx.restore();
         if (e.target.value == 'regular') {
             n = 0;
             c = 4;
