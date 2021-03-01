@@ -3,18 +3,21 @@ import * as audio from './audio.js';
 
 var canvasWidth = 800, canvasHeight = 600;
 var ctx, n = 0, fps = 2000;
+var analyserNode, audioData;
+var playButton;
+
+let cDefault = 10;
 
 //Phyllotaxis variables
 var divergence = 137.5;
-var c = 4;
+var c = cDefault;
 var size = 4;
 var hValue = 361;
 var offsetX = 0, offsetY = 0;
-var repeater = 10;
 let color;
 let colorChosen = "rainbow";
 let loopNum = 3;
-let nMax = 400; 
+let nMax = 400;
 
 //Audio Variables
 const DEFAULTS = Object.freeze({
@@ -30,14 +33,14 @@ function init() {
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
     //Audio
-    setupUI(canvas);
-
+    setupUI(canvas, audio.analyserNode);
     audio.audioCtx.suspend();
 
-    window.requestAnimationFrame(loop);
+    loop();
+    //window.requestAnimationFrame(loop);
 }
 
-function setupUI(canvasElement) {
+function setupUI(canvasElement, analyserNodeRef) {
     // A - hookup fullscreen button
     const fsButton = document.querySelector("#fsButton");
 
@@ -47,7 +50,7 @@ function setupUI(canvasElement) {
         utils.goFullscreen(canvasElement);
     };
 
-    var playButton = document.querySelector('#playButton');
+    playButton = document.querySelector('#playButton');
     playButton.onclick = e => {
         //console.log(`audioCtx.state before = ${audio.audioCtx.state}`);
         if (audio.audioCtx.state == 'suspended') {
@@ -94,7 +97,7 @@ function setupUI(canvasElement) {
         ctx.restore();
         if (e.target.value == 'regular') {
             n = 0;
-            c = 4;
+            c = cDefault;
             size = 4;
             divergence = 137.5;
             loopNum = 3;
@@ -117,22 +120,31 @@ function setupUI(canvasElement) {
         }
     };
 
+    analyserNode = analyserNodeRef;
+
+    // 1) create a byte array (values of 0-255) to hold the audio data
+    // normally, we do this once when the program starts up, NOT every frame
+    audioData = new Uint8Array(analyserNodeRef.fftSize / 2);
+
+    console.log(analyserNode);
+    console.log(audioData);
+
 } // end setupUI
 
 function loop() {
-    
+
     if (n > nMax) {
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
         n = 0;
-        c = 4;
-        size = 4;
+        c = cDefault;
+        //size = 4;
     }
 
     //let bDegrees = (n * divergence) % hValue;
     //let color = `hsla(${bDegrees},100%,50%, 0.5)`;
 
     if (colorChosen == "rainbow") {
-        color = `hsla(${n % hValue},100%,50%, 0.5)`;
+        color = `hsla(${n % hValue},100%,50%, 0.8)`;
     }
     else if (colorChosen == "red") {
         color = `rgb(${n % hValue}, 0, 0)`;
@@ -147,19 +159,33 @@ function loop() {
         color = `rgb(${n % hValue - 100}, 0, ${n % hValue})`;
     }
 
-    for (let loop = 0; loop < loopNum; loop++) {
-        createPhylotaxis(ctx, size, color, n, c);
+    if (playButton.dataset.playing == "yes") {
+        analyserNode.getByteFrequencyData(audioData);
+        let totalLoudness = audioData.reduce((total, num) => total + num);
+        let averageLoudness = totalLoudness / (analyserNode.fftSize / 2);
+        // Now look at loudness in a specific bin
+        // 22050 kHz divided by 128 bins = 172.23 kHz per bin
+        // the 12th element in array represents loudness at 2.067 kHz
+        let loudnessAt2K = audioData[11];
 
-        n++;
-        size += .01;
-        c += 0.01;        
+        // console.log(averageLoudness);
+        // console.log(loudnessAt2K);
+
+        size = 2 * averageLoudness / 40.0 + (audio.getVolume());
+
+        for (let loop = 0; loop < loopNum; loop++) {
+            createPhylotaxis(ctx, size, color, n, c);
+
+            n++;
+            // size += .01;
+            //c += 0.01;
+        }
     }
-
     setTimeout(loop, 1000 / fps);
 }
 
 function createPhylotaxis(ctx, size, color, n, c) {
-    for (let i = 0; i < repeater; ++i) {
+    //for (let i = 0; i < repeater; ++i) {
         //Reset when n reaches 1500
         // each frame draw a new dot
         // `a` is the angle
@@ -173,7 +199,7 @@ function createPhylotaxis(ctx, size, color, n, c) {
         let y = r * Math.sin(a) + canvasHeight / 2 + offsetY;
 
         utils.drawCircle(ctx, x, y, size, color);
-    }
+    //}
 
 }
 
