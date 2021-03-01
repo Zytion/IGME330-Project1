@@ -1,17 +1,35 @@
 body {
-	background: #eeeeee;
+	background: #1b1e23;
 	font-family: tahoma, verdana, sans serif;
+  color:#fafafa;
 }
 
 canvas {
-	margin-left: 1rem;
-	margin-top: 1rem;
-	margin-bottom: 1rem;
-	box-shadow: 4px 4px 8px rgba(0,0,0,0.5);
+  display: block;
+	box-shadow: 0px 4px 8px rgba(0,0,0,0.5);
 	background: #fafafa;
+  border-right: 1px solid #fafafa;
+}
+
+#sidebyside {
+  margin: 2rem auto;
+  display:flex;
+  justify-content: center;
 }
 
 #controls{
+  display: grid;
+  justify-content: left;
+  align-items: left;
+  width: 275px;
+  background-color: #2B2D2F;
+  box-shadow: 0px 4px 8px rgba(0,0,0,0.5);
+}
+
+.input {
+  width: 100%;
+  padding: .25em;
+  margin-top: .5rem;
   margin-left: 1rem;
 }
 
@@ -25,15 +43,15 @@ section{
 
 #playButton{
   font-size: 1.2rem;
-  width: 6rem;
+  width: 4rem;
 }
 
 button[data-playing="yes"]:after{
-  content: "Pause";
+  content: "⏼︎";
 }
 
 button[data-playing="no"]:after{
-  content: "Play";
+  content: "▷";
 }
 
 #fsButton{

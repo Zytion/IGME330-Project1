@@ -10,25 +10,50 @@
 
 <body>
     <main>
-        <canvas width="800" height="400"></canvas>
-        <div id="controls">
-            <section>
-                <button id="playButton" data-playing="no"></button>
-                <button id="fsButton">Full Screen</button>
-            
-                <label>Track: 
-                    <select id="trackSelect">
-                        <option value="./media/Unknown.mp3" selected>Unknown for M.E.</option>
-                        <option value="./media/allstart-instrumental.wav">All Star</option>
-                        <option value="./media/Wide Putin.mp3">W I D E</option>
-                    </select>
-                </label>
-            </section>
-            
-            <section>
-                Volume: <input type="range" id="volumeSlider" min="0" max="2" value="1" step="0.01">
-                <span id="volumeLabel">???</span>
-            </section>
+        <div id="sidebyside">
+            <canvas width="800" height="600"></canvas>
+            <div id="controls">
+                <!-- SONG SETTINGS -->
+                <div class="input">
+                    <button id="playButton" data-playing="no"></button>
+                    <button id="fsButton">Fullscreen</button>
+                </div>
+                <div class="input">
+                    <label>Track:
+                        <select id="trackSelect">
+                            <option value="./media/Unknown.mp3" selected>Unknown for M.E.</option>
+                            <option value="./media/allstart-instrumental.wav">All Star</option>
+                            <option value="./media/Wide Putin.mp3">W I D E</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="input">
+                    Volume: <input type="range" id="volumeSlider" min="0" max="2" value="1" step="0.01">
+                    <span id="volumeLabel">???</span>
+                </div>
+                <!-- PHYLOTAXIS SETTINGS -->
+                <div class="input">
+                    <label>Color:
+                        <select id="colorSelect">
+                            <option value="rainbow" selected>Rainbow</option>
+                            <option value="red">Red</option>
+                            <option value="blue">Blue</option>
+                            <option value="blue">Green</option>
+                            <option value="blue">Purple</option>
+                        </select>
+                    </label>
+                </div>
+                <div class="input">
+                    <label>Pattern:
+                        <select id="colorSelect">
+                            <option value="regular" selected>Regular</option>
+                            <option value="lines">Lines</option>
+                            <option value="condensed">Condensed</option>
+                        </select>
+                    </label>
+                </div>
+            </div>
+
         </div>
     </main>
 </body>
