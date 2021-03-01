@@ -16,6 +16,8 @@ let colorChosen = "rainbow";
 let loopNum = 3;
 let nMax = 400; 
 
+let audioData;
+let analyserNode; 
 //Audio Variables
 const DEFAULTS = Object.freeze({
     sound1: "media/Unknown.mp3"
@@ -33,7 +35,8 @@ function init() {
     setupUI(canvas);
 
     audio.audioCtx.suspend();
-
+    analyserNode = audio.analyserNode;
+    audioData = new Uint8Array(audio.analyserNode.fftSize/2);
     window.requestAnimationFrame(loop);
 }
 
@@ -154,6 +157,26 @@ function loop() {
         size += .01;
         c += 0.01;        
     }
+
+    //AUDIO LOOP
+	audio.analyserNode.getByteFrequencyData(audioData);
+    console.log(audioData);
+		
+    console.log("-----Audio Stats-----");
+    let totalLoudness =  audioData.reduce((total,num) => total + num);
+    let averageLoudness =  totalLoudness/(audio.analyserNode.fftSize/2);
+    let minLoudness =  Math.min(...audioData); // ooh - the ES6 spread operator is handy!
+    let maxLoudness =  Math.max(...audioData); // ditto!
+    // Now look at loudness in a specific bin
+    // 22050 kHz divided by 128 bins = 172.23 kHz per bin
+    // the 12th element in array represents loudness at 2.067 kHz
+    let loudnessAt2K = audioData[11]; 
+    console.log(`averageLoudness = ${averageLoudness}`);
+    console.log(`minLoudness = ${minLoudness}`);
+    console.log(`maxLoudness = ${maxLoudness}`);
+    console.log(`loudnessAt2K = ${loudnessAt2K}`);
+    console.log("---------------------");
+
 
     setTimeout(loop, 1000 / fps);
 }
