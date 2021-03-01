@@ -12,6 +12,8 @@ var hValue = 361;
 var offsetX = 0, offsetY = 0;
 var repeater = 10;
 let color;
+let colorChosen = "rainbow";
+let loopNum = 3;
 let nMax = 400; 
 
 //Audio Variables
@@ -79,6 +81,39 @@ function setupUI(canvasElement) {
         }
     };
 
+    let colorSelect = document.querySelector("#colorSelect");
+    colorSelect.onchange = e => {
+        colorChosen = e.target.value;
+    };
+
+    let patternSelect = document.querySelector("#patternSelect");
+    patternSelect.onchange = e => {
+        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+        if (e.target.value == 'regular') {
+            n = 0;
+            c = 4;
+            size = 4;
+            divergence = 137.5;
+            loopNum = 3;
+        }
+        else if (e.target.value == 'lines') {
+            n = 0;
+            c = 2;
+            size = 2;
+            divergence = 20;
+            nMax = 365;
+            loopNum = 3;
+        }
+        else {
+            n = 0;
+            c = 1;
+            size = 2;
+            divergence = 4;
+            nMax = 365;
+            loopNum = 2;
+        }
+    };
+
 } // end setupUI
 
 function loop() {
@@ -93,9 +128,23 @@ function loop() {
     //let bDegrees = (n * divergence) % hValue;
     //let color = `hsla(${bDegrees},100%,50%, 0.5)`;
 
-    for (let loop = 0; loop < 3; loop++) {
+    if (colorChosen == "rainbow") {
         color = `hsla(${n % hValue},100%,50%, 0.5)`;
+    }
+    else if (colorChosen == "red") {
+        color = `rgb(${n % hValue}, 0, 0)`;
+    }
+    else if (colorChosen == "green") {
+        color = `rgb(0, ${n % hValue}, ${n % hValue - 200})`;
+    }
+    else if (colorChosen == "blue") {
+        color = `rgb(0, ${n % hValue - 100}, ${n % hValue})`;
+    }
+    else {
+        color = `rgb(${n % hValue - 100}, 0, ${n % hValue})`;
+    }
 
+    for (let loop = 0; loop < loopNum; loop++) {
         createPhylotaxis(ctx, size, color, n, c);
 
         n++;
@@ -120,13 +169,7 @@ function createPhylotaxis(ctx, size, color, n, c) {
         let x = r * Math.cos(a) + canvasWidth / 2 + offsetX;
         let y = r * Math.sin(a) + canvasHeight / 2 + offsetY;
 
-        //let color = `rgb(${n % 256},0,255)`;
-
-        //let aDegrees = (n * divergence) % 256;
-        // let color = `rgb(${aDegrees},0,255)`;
         utils.drawCircle(ctx, x, y, size, color);
-
-       
     }
 
 }
