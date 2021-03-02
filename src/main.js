@@ -2,7 +2,7 @@ import * as utils from "./utils.js";
 import * as audio from './audio.js';
 
 var canvasWidth = 800, canvasHeight = 600;
-var ctx, n = 0, fps = 2000;
+var ctx, n = 0, fps = 60;
 var analyserNode, audioData;
 var playButton;
 
@@ -16,11 +16,10 @@ var hValue = 361;
 var offsetX = 0, offsetY = 0;
 let color;
 let colorChosen = "rainbow";
-let loopNum = 3;
+let loopNum = 5;
 let nMax = 400;
+let beatsPerMinute = 124;
 
-let audioData;
-let analyserNode; 
 //Audio Variables
 const DEFAULTS = Object.freeze({
     sound1: "media/Unknown.mp3"
@@ -129,8 +128,6 @@ function setupUI(canvasElement, analyserNodeRef) {
     audioData = new Uint8Array(analyserNodeRef.fftSize / 2);
 
     console.log(analyserNode);
-    console.log(audioData);
-
 } // end setupUI
 
 function loop() {
@@ -139,6 +136,19 @@ function loop() {
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
         n = 0;
         c = cDefault;
+        
+        if (playButton.dataset.playing == "yes") {
+            analyserNode.getByteFrequencyData(audioData);
+            let totalLoudness = audioData.reduce((total, num) => total + num);
+            let averageLoudness = totalLoudness / (analyserNode.fftSize / 2);
+            // Now look at loudness in a specific bin
+            // 22050 kHz divided by 128 bins = 172.23 kHz per bin
+            // the 12th element in array represents loudness at 2.067 kHz
+            let loudnessAt2K = audioData[11];
+            let vol = averageLoudness / 40.0 + audio.getVolume(); //goes from 2 - 4
+            nMax = Math.round(110 * vol);
+            fps = 0.15 * nMax;
+        }
         //size = 4;
     }
 
@@ -162,18 +172,6 @@ function loop() {
     }
 
     if (playButton.dataset.playing == "yes") {
-        analyserNode.getByteFrequencyData(audioData);
-        let totalLoudness = audioData.reduce((total, num) => total + num);
-        let averageLoudness = totalLoudness / (analyserNode.fftSize / 2);
-        // Now look at loudness in a specific bin
-        // 22050 kHz divided by 128 bins = 172.23 kHz per bin
-        // the 12th element in array represents loudness at 2.067 kHz
-        let loudnessAt2K = audioData[11];
-
-        // console.log(averageLoudness);
-        // console.log(loudnessAt2K);
-
-        size = 2 * averageLoudness / 40.0 + (audio.getVolume());
 
         for (let loop = 0; loop < loopNum; loop++) {
             createPhylotaxis(ctx, size, color, n, c);
@@ -188,19 +186,19 @@ function loop() {
 
 function createPhylotaxis(ctx, size, color, n, c) {
     //for (let i = 0; i < repeater; ++i) {
-        //Reset when n reaches 1500
-        // each frame draw a new dot
-        // `a` is the angle
-        // `r` is the radius from the center (e.g. "Pole") of the flower
-        // `c` is the "padding/spacing" between the dots
-        let a = n * utils.dtr(divergence);
-        let r = c * Math.sqrt(n);
+    //Reset when n reaches 1500
+    // each frame draw a new dot
+    // `a` is the angle
+    // `r` is the radius from the center (e.g. "Pole") of the flower
+    // `c` is the "padding/spacing" between the dots
+    let a = n * utils.dtr(divergence);
+    let r = c * Math.sqrt(n);
 
-        // now calculate the `x` and `y`
-        let x = r * Math.cos(a) + canvasWidth / 2 + offsetX;
-        let y = r * Math.sin(a) + canvasHeight / 2 + offsetY;
+    // now calculate the `x` and `y`
+    let x = r * Math.cos(a) + canvasWidth / 2 + offsetX;
+    let y = r * Math.sin(a) + canvasHeight / 2 + offsetY;
 
-        utils.drawCircle(ctx, x, y, size, color);
+    utils.drawCircle(ctx, x, y, size, color);
     //}
 
 }
