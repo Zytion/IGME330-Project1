@@ -6,6 +6,7 @@ let audioCtx;
 let element, sourceNode, analyserNode, gainNode, actualBPM;
 
 let filterThreshold = 0.6;
+let skipRate = 1000;
 let bpmText = document.querySelector('#BPM');
 
 // 3 - here we are faking an enumeration
@@ -150,7 +151,7 @@ function getPeaksAtThreshold(data, threshold) {
         if (data[i] > threshold) {
             peaksArray.push(i);
             // Skip forward ~ 1/4s to get past this peak.
-            i += 5000;
+            i += skipRate;
         }
         i++;
     }

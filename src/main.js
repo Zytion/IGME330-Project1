@@ -81,6 +81,7 @@ function setupUI(canvasElement, analyserNodeRef) {
     volumeSlider.dispatchEvent(new Event("input"));
 
     let trackSelect = document.querySelector("#trackSelect");
+    trackSelect.selectedIndex = 0;
     trackSelect.onchange = e => {
         audio.loadSoundFile(e.target.value);
         if (playButton.dataset.playing == "yes") {
@@ -111,7 +112,7 @@ function setupUI(canvasElement, analyserNodeRef) {
             c = 2;
             size = 2;
             divergence = 20;
-            nMax = 365;
+            //nMax = 365;
             //loopNum = 3;
         }
         else {
@@ -119,7 +120,7 @@ function setupUI(canvasElement, analyserNodeRef) {
             c = 1;
             size = 2;
             divergence = 4;
-            nMax = 365;
+            //nMax = 365;
             //loopNum = 2;
         }
     };
@@ -148,7 +149,7 @@ function loop() {
             // 22050 kHz divided by 128 bins = 172.23 kHz per bin
             // the 12th element in array represents loudness at 2.067 kHz
             let loudnessAt2K = audioData[11];
-            let vol = averageLoudness / 40.0 + audio.getVolume(); //goes from 2 - 4
+            let vol = (averageLoudness / 40.0 + audio.getVolume() * 2) - 1; //goes from 2 - 4
 
             // philoPerSecond = beatsPerSecond;
             // dotPerFrame = loopNum;
