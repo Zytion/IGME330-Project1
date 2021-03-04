@@ -32,6 +32,10 @@ canvas {
   margin-top: .5rem;
 }
 
+#trackSelect {
+  max-width: 15em;
+}
+
 #volumeSlider {
   width: 50%;
 }

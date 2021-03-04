@@ -138,6 +138,12 @@ function getBPM(buffer) {
         var top = groups.sort(function (intA, intB) {
             return intB.count - intA.count;
         }).splice(0, 5);
+        if(top.length == 0)
+        {
+            filterThreshold -= 0.1;
+            getBPM(buffer);
+            return;
+        }
         actualBPM = Math.round(top[0].tempo);
         console.log("Actual BPM: " + actualBPM);
         bpmText.textContent = `BPM = ${actualBPM}`;

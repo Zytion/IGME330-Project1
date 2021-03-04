@@ -89,6 +89,31 @@ function setupUI(canvasElement, analyserNodeRef) {
         }
     };
 
+    let fileInput = document.querySelector("#songUpload");
+    fileInput.oninput = e => {
+        console.log(e.target.value);
+        var freader = new FileReader();
+        let option = document.createElement("option");
+        let file = e.target.files[0];
+        option.textContent = file.name;
+        console.log(file);
+        if ((file.type == "audio/mpeg" && file.size < 10000000) ||
+         (file.type == "audio/wav" && file.size < 40000000)) {
+            freader.onload = function (e) {
+                console.log(e);
+                option.value = e.target.result;
+                trackSelect.appendChild(option);
+                fileInput.value = "";
+            };
+            freader.readAsDataURL(file);
+        }
+        else
+        {
+            window.alert("File too large");
+            fileInput.value = "";
+        }
+    };
+
     let colorSelect = document.querySelector("#colorSelect");
     colorSelect.onchange = e => {
         colorChosen = e.target.value;
@@ -140,7 +165,7 @@ function loop() {
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
         n = 0;
         c = cDefault;
-        
+
         if (playButton.dataset.playing == "yes") {
             analyserNode.getByteFrequencyData(audioData);
             let totalLoudness = audioData.reduce((total, num) => total + num);
