@@ -28,9 +28,12 @@ canvas {
 
 .input {
   width: 100%;
-  padding: .25em;
+  padding: .5em;
   margin-top: .5rem;
-  margin-left: 1rem;
+}
+
+#volumeSlider {
+  width: 50%;
 }
 
 #volumeLabel{
@@ -57,4 +60,8 @@ button[data-playing="no"]:after{
 #fsButton{
   font-size: 1.2rem;
   width: 8rem;
+}
+
+#BPM {
+  margin-top: 1em;
 }

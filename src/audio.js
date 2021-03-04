@@ -5,6 +5,9 @@ let audioCtx;
 // 2 - WebAudio nodes that are part of our WebAudio audio routing graph
 let element, sourceNode, analyserNode, gainNode, actualBPM;
 
+let filterThreshold = 0.6;
+let bpmText = document.querySelector('#BPM');
+
 // 3 - here we are faking an enumeration
 const DEFAULTS = Object.freeze({
     gain: 0.5,
@@ -58,6 +61,7 @@ function setupWebaudio(filePath) {
 }
 
 function loadSoundFile(filePath) {
+    bpmText.textContent = `Loading...`;
     element.src = filePath;
     getData(filePath);
 }
@@ -129,12 +133,13 @@ function getBPM(buffer) {
     offlineContext.oncomplete = function (e) {
         // Filtered buffer!
         var filteredBuffer = e.renderedBuffer;
-        let groups = groupNeighborsByTempo(filteredBuffer.getChannelData(0), 0.6, buffer.sampleRate);
+        let groups = groupNeighborsByTempo(filteredBuffer.getChannelData(0), filterThreshold, buffer.sampleRate);
         var top = groups.sort(function (intA, intB) {
             return intB.count - intA.count;
         }).splice(0, 5);
         actualBPM = Math.round(top[0].tempo);
         console.log("Actual BPM: " + actualBPM);
+        bpmText.textContent = `BPM = ${actualBPM}`;
     };
 }
 
