@@ -94,7 +94,7 @@ function getData(url) {
             source.buffer = buffer;
 
             source.connect(audioCtx.destination);
-            console.log(getBPM(buffer));
+            getBPM(buffer);
         },
 
             function (e) { console.log("Error with decoding audio data" + e.err); });
@@ -129,12 +129,10 @@ function getBPM(buffer) {
     offlineContext.oncomplete = function (e) {
         // Filtered buffer!
         var filteredBuffer = e.renderedBuffer;
-        console.log(buffer);
         let groups = groupNeighborsByTempo(filteredBuffer.getChannelData(0), 0.6, buffer.sampleRate);
         var top = groups.sort(function (intA, intB) {
             return intB.count - intA.count;
         }).splice(0, 5);
-        console.log(top);
         actualBPM = Math.round(top[0].tempo);
         console.log("Actual BPM: " + actualBPM);
     };

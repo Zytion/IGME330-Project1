@@ -16,9 +16,10 @@ var hValue = 361;
 var offsetX = 0, offsetY = 0;
 let color;
 let colorChosen = "rainbow";
-let loopNum = 5;
-let nMax = 400;
-let beatsPerMinute = 124;
+let loopNum = 1;
+let nMax = 500;
+let beatsPerSecond = 124.0 / 60.0;
+
 
 //Audio Variables
 const DEFAULTS = Object.freeze({
@@ -53,6 +54,8 @@ function setupUI(canvasElement, analyserNodeRef) {
 
     playButton = document.querySelector('#playButton');
     playButton.onclick = e => {
+
+        loopNum = Math.round(beatsPerSecond * nMax / fps);
         //console.log(`audioCtx.state before = ${audio.audioCtx.state}`);
         if (audio.audioCtx.state == 'suspended') {
             audio.audioCtx.resume();
@@ -101,7 +104,7 @@ function setupUI(canvasElement, analyserNodeRef) {
             c = cDefault;
             size = 4;
             divergence = 137.5;
-            loopNum = 3;
+            //loopNum = 3;
         }
         else if (e.target.value == 'lines') {
             n = 0;
@@ -109,7 +112,7 @@ function setupUI(canvasElement, analyserNodeRef) {
             size = 2;
             divergence = 20;
             nMax = 365;
-            loopNum = 3;
+            //loopNum = 3;
         }
         else {
             n = 0;
@@ -117,7 +120,7 @@ function setupUI(canvasElement, analyserNodeRef) {
             size = 2;
             divergence = 4;
             nMax = 365;
-            loopNum = 2;
+            //loopNum = 2;
         }
     };
 
@@ -146,8 +149,20 @@ function loop() {
             // the 12th element in array represents loudness at 2.067 kHz
             let loudnessAt2K = audioData[11];
             let vol = averageLoudness / 40.0 + audio.getVolume(); //goes from 2 - 4
+
+            // philoPerSecond = beatsPerSecond;
+            // dotPerFrame = loopNum;
+            // dotPerSecond = dotPerFrame * fps;
+            // secondsPerPhilo = nMax / dotPerSecond;
+
+            // secondsPerPhilo = nMax / (loopNum * fps);
+            // philoPerSecond = audio.actualBPM / 60.0;
+
+            //secondsPerPhilo = 1.0 / philoPerSecond;
+            //nMax / (loopNum * fps) = 1.0 / beatsPerSecond;
+            // beatsPerSecond = audio.actualBPM / 60.0;
             nMax = Math.round(110 * vol);
-            fps = 0.15 * nMax;
+            loopNum = Math.round(beatsPerSecond * nMax / fps);
         }
         //size = 4;
     }
