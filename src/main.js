@@ -160,7 +160,10 @@ function setupUI(canvasElement, analyserNodeRef) {
 function loop() {
 
     if (n > nMax) {
+        ctx.save();
+        ctx.fillStyle = "rgba(0,0,0,0.8)"
         ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+        ctx.restore();
         n = 0;
         c = cDefault;
 
