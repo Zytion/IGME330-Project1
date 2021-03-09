@@ -3,13 +3,16 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Audio</title>
+    <title>PhyloAudio</title>
     <link href="src/style.css" type="text/css" rel="stylesheet" />
     <script type="module" src="./src/loader.js"></script>
 </head>
 
 <body>
     <main>
+        <header>
+            <h1>PhyloAudio</h1>
+        </header>
         <div id="sidebyside">
             <canvas width="800" height="600"></canvas>
             <div id="controls">
@@ -58,8 +61,32 @@
                         </select>
                     </label>
                 </div>
+                <!--TODO-->
+                <div class="input">
+                    <label>Speed Mode:
+                        <select id="speedSelect">
+                            <option value="beats" selected>Beats</option>
+                            <option value="melody">Melody</option>
+                            <option value="constant">Constant</option>
+                        </select>
+                    </label>
+                </div>
+                <!--TODO-->
+                <div class="input">
+                    <label>Size Mode:
+                        <select id="sizeSelect">
+                            <option value="volume" selected>Volume</option>
+                            <option value="constant">Constant</option>
+                        </select>
+                    </label>
+                </div>
             </div>
-
+        </div>
+        <div>
+            <h2>Instructions</h2>
+            <div>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Est itaque, alias, saepe reiciendis at nisi veritatis ratione exercitationem amet, nostrum eligendi a labore fugit omnis eveniet laborum ut ipsam? Excepturi.
+            </div>
         </div>
     </main>
 </body>
