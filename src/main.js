@@ -54,7 +54,6 @@ function setupUI(canvasElement, analyserNodeRef) {
 
     playButton = document.querySelector('#playButton');
     playButton.onclick = e => {
-
         loopNum = Math.round(beatsPerSecond * nMax / fps);
         //console.log(`audioCtx.state before = ${audio.audioCtx.state}`);
         if (audio.audioCtx.state == 'suspended') {
@@ -98,7 +97,7 @@ function setupUI(canvasElement, analyserNodeRef) {
         option.textContent = file.name;
         console.log(file);
         if ((file.type == "audio/mpeg" && file.size < 10000000) ||
-         (file.type == "audio/wav" && file.size < 40000000)) {
+            (file.type == "audio/wav" && file.size < 40000000)) {
             freader.onload = function (e) {
                 console.log(e);
                 option.value = e.target.result;
@@ -107,8 +106,7 @@ function setupUI(canvasElement, analyserNodeRef) {
             };
             freader.readAsDataURL(file);
         }
-        else
-        {
+        else {
             window.alert("File too large");
             fileInput.value = "";
         }
@@ -186,9 +184,10 @@ function loop() {
 
             //secondsPerPhilo = 1.0 / philoPerSecond;
             //nMax / (loopNum * fps) = 1.0 / beatsPerSecond;
-            // beatsPerSecond = audio.actualBPM / 60.0;
+            beatsPerSecond = audio.actualBPM / 60.0;
             nMax = Math.round(110 * vol);
-            loopNum = Math.round(beatsPerSecond * nMax / fps);
+            loopNum = Math.round(beatsPerSecond * nMax / 60.0);
+            //fps = nMax * beatsPerSecond / loopNum;
         }
         //size = 4;
     }
@@ -213,7 +212,6 @@ function loop() {
     }
 
     if (playButton.dataset.playing == "yes") {
-
         for (let loop = 0; loop < loopNum; loop++) {
             createPhylotaxis(ctx, size, color, n, c);
 

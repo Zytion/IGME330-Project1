@@ -11,6 +11,15 @@ canvas {
   border-right: 1px solid #fafafa;
 }
 
+header {
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+}
+h1 {
+  margin: 0;
+}
+
 #sidebyside {
   margin: 2rem auto;
   display:flex;
@@ -54,7 +63,7 @@ section{
 }
 
 button[data-playing="yes"]:after{
-  content: "⏼︎";
+  content: "⏸";
 }
 
 button[data-playing="no"]:after{

@@ -147,6 +147,11 @@ function getBPM(buffer) {
         actualBPM = Math.round(top[0].tempo);
         console.log("Actual BPM: " + actualBPM);
         bpmText.textContent = `BPM = ${actualBPM}`;
+        if(isNaN(actualBPM))
+        {
+            actualBPM = 120;
+            bpmText.textContent = `BPM = NaN (Using 120 BPM)`;
+        }
     };
 }
 
