@@ -19,6 +19,7 @@ let colorChosen = "rainbow";
 let loopNum = 1;
 let nMax = 500;
 let beatsPerSecond = 124.0 / 60.0;
+let alpha = 1;
 
 
 //Audio Variables
@@ -128,25 +129,28 @@ function setupUI(canvasElement, analyserNodeRef) {
             c = cDefault;
             size = 4;
             divergence = 137.5;
-            //loopNum = 3;
         }
         else if (e.target.value == 'lines') {
             n = 0;
-            c = 2;
             size = 2;
             divergence = 20;
-            //nMax = 365;
-            //loopNum = 3;
         }
         else {
             n = 0;
-            c = 1;
             size = 2;
             divergence = 4;
-            //nMax = 365;
-            //loopNum = 2;
         }
     };
+
+    let opacitySlider = document.querySelector("#opacitySlider");
+    let opacityLabel = document.querySelector("#opacityLabel");
+
+    opacitySlider.oninput = e => {
+        alpha = e.target.value;
+        opacityLabel.innerHTML = (e.target.value * 100) + '%';
+    };
+    opacitySlider.dispatchEvent(new Event("input"));
+
 
     analyserNode = analyserNodeRef;
 
@@ -195,23 +199,20 @@ function loop() {
         //size = 4;
     }
 
-    //let bDegrees = (n * divergence) % hValue;
-    //let color = `hsla(${bDegrees},100%,50%, 0.5)`;
-
     if (colorChosen == "rainbow") {
-        color = `hsla(${n % hValue},100%,50%, 0.8)`;
+        color = `hsla(${n % hValue},100%,50%, ${alpha})`;
     }
-    else if (colorChosen == "red") {
-        color = `rgb(${n % hValue}, 0, 0)`;
+    else if (colorChosen == "candy") {
+        color = `rgba(${n % hValue + 55}, 0, ${200 - (n % hValue) / 2}, ${alpha})`;
     }
-    else if (colorChosen == "green") {
-        color = `rgb(0, ${n % hValue}, ${n % hValue - 200})`;
+    else if (colorChosen == "cool") {
+        color = `rgba(0, ${n % hValue}, ${256 - (n % hValue)}, ${alpha})`;
     }
-    else if (colorChosen == "blue") {
-        color = `rgb(0, ${n % hValue - 100}, ${n % hValue})`;
+    else if (colorChosen == "ocean") {
+        color = `rgba(0, ${85 - (n % hValue) / 4}, ${n % hValue + 55}, ${alpha})`;
     }
     else {
-        color = `rgb(${n % hValue - 100}, 0, ${n % hValue})`;
+        color = `hsla(${1 - n % hValue},100%,50%, ${alpha})`;
     }
 
     if (playButton.dataset.playing == "yes") {
