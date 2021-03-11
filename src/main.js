@@ -1,5 +1,6 @@
 import * as utils from "./utils.js";
 import * as audio from './audio.js';
+import * as file from "./file.js";
 
 var canvasWidth = 800, canvasHeight = 600;
 var ctx, n = 0, fps = 60;
@@ -34,6 +35,8 @@ function init() {
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    //file.readSongList();
 
     //Audio
     setupUI(canvas, audio.analyserNode);
@@ -92,25 +95,8 @@ function setupUI(canvasElement, analyserNodeRef) {
     let fileInput = document.querySelector("#songUpload");
     fileInput.oninput = e => {
         console.log(e.target.value);
-        var freader = new FileReader();
-        let option = document.createElement("option");
-        let file = e.target.files[0];
-        option.textContent = file.name;
-        console.log(file);
-        if ((file.type == "audio/mpeg" && file.size < 10000000) ||
-            (file.type == "audio/wav" && file.size < 40000000)) {
-            freader.onload = function (e) {
-                console.log(e);
-                option.value = e.target.result;
-                trackSelect.appendChild(option);
-                fileInput.value = "";
-            };
-            freader.readAsDataURL(file);
-        }
-        else {
-            window.alert("File too large");
-            fileInput.value = "";
-        }
+        file.readFile(e);
+        fileInput.value = "";
     };
 
     let colorSelect = document.querySelector("#colorSelect");
