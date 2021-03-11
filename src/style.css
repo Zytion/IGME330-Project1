@@ -11,6 +11,21 @@ canvas {
   border-right: 1px solid #fafafa;
 }
 
+main {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
+}
+
+#instructions {
+  display: flex;
+  flex-flow: column nowrap;
+  width: 1075px;
+}
+#instructions > * {
+  margin: 5px 0;
+}
+
 header {
   display: flex;
   flex-flow: row nowrap;
@@ -60,6 +75,31 @@ section{
 #playButton{
   font-size: 1.2rem;
   width: 4rem;
+}
+
+#songUpload {
+  display: none; 
+}
+
+label[for=songUpload]
+{
+  background-color: white;
+  color: black;
+  border: solid black 1.4px;
+  font-size: 0.8em;
+  padding: 0 8px;
+}
+
+#fileUpload {
+  display: flex;
+  flex-flow: row nowrap;
+  width: max-content;
+  justify-content: space-between;
+  padding: 0;
+}
+
+#fileUpload > * {
+  margin-right: 12px;
 }
 
 button[data-playing="yes"]:after{
