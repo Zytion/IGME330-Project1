@@ -193,7 +193,7 @@ function loop() {
             switch(circleSizeSelect.value)
             {
                 case "volume":
-                    size = vol * 2;
+                    size = vol + 1;
                     break;
                 default:
                     size = 4;
