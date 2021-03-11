@@ -21,7 +21,10 @@ let loopNum = 1;
 let nMax = 500;
 let beatsPerSecond = 124.0 / 60.0;
 let alpha = 1;
+let sizeSelect, circleSizeSelect, philoSizeSelect;
 
+const DEFAULT_NMAX = 400;
+const DEFAULT_LOOPNUM = 14;
 
 //Audio Variables
 const DEFAULTS = Object.freeze({
@@ -94,9 +97,8 @@ function setupUI(canvasElement, analyserNodeRef) {
 
     let fileInput = document.querySelector("#songUpload");
     fileInput.oninput = e => {
-        console.log(e.target.value);
+        //console.log(e.target.value);
         file.readFile(e);
-        fileInput.value = "";
     };
 
     let clearButton = document.querySelector("#clearButton");
@@ -132,6 +134,10 @@ function setupUI(canvasElement, analyserNodeRef) {
             divergence = 4;
         }
     };
+    
+    sizeSelect = document.querySelector("#sizeSelect");
+    circleSizeSelect = document.querySelector("#circleSizeSelect");
+    philoSizeSelect = document.querySelector("#philoSizeSelect");
 
     let opacitySlider = document.querySelector("#opacitySlider");
     let opacityLabel = document.querySelector("#opacityLabel");
@@ -183,8 +189,36 @@ function loop() {
             //secondsPerPhilo = 1.0 / philoPerSecond;
             //nMax / (loopNum * fps) = 1.0 / beatsPerSecond;
             beatsPerSecond = audio.actualBPM / 60.0;
-            nMax = Math.round(110 * vol);
-            loopNum = Math.round(beatsPerSecond * nMax / 60.0);
+
+            switch(circleSizeSelect.value)
+            {
+                case "volume":
+                    size = vol * 2;
+                    break;
+                default:
+                    size = 4;
+                    break;
+            }
+
+            switch(sizeSelect.value)
+            {
+                case "volume":
+                    nMax = Math.round(110 * vol);
+                    break;
+                default:
+                    nMax = DEFAULT_NMAX;
+                    break;
+            }
+
+            switch(speedSelect.value)
+            {
+                case "beats":
+                    loopNum = Math.round(beatsPerSecond * nMax / 60.0 * 2.0);
+                    break;
+                default:
+                    loopNum = DEFAULT_LOOPNUM;
+                    break;
+            }
             //fps = nMax * beatsPerSecond / loopNum;
         }
         //size = 4;
@@ -208,8 +242,10 @@ function loop() {
 
     if (playButton.dataset.playing == "yes") {
         for (let loop = 0; loop < loopNum; loop++) {
-            createPhylotaxis(ctx, size, color, n, c);
-
+            if(n < nMax)
+            {
+                createPhylotaxis(ctx, size, color, n, c);
+            }
             n++;
             // size += .01;
             //c += 0.01;

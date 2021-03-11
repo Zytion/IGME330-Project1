@@ -12,7 +12,7 @@ function readSongList() {
             songList.forEach(song => {
                 //WIP
                 console.log(song.name);
-                //addOption(song.name, song.path);
+                addOption(song.name, song.path);
             });
         }
     } else {
@@ -39,12 +39,14 @@ function readFile(e) {
             trackSelect.dispatchEvent(new Event("change"));
            
             if (typeof (Storage) !== "undefined") {
+                //console.log(e.target.result);
                 // Code for localStorage
                 let song = {
                     name: file.name,
                     path: URL.createObjectURL(file)
+                    //path: e.target.result
                 };
-                songList.push(song);
+                //songList.push(song);
                 try {
                     localStorage.setItem('songlist', JSON.stringify(songList));
                 } catch (error) {
