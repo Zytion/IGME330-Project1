@@ -1,5 +1,6 @@
 import * as utils from "./utils.js";
 import * as audio from './audio.js';
+import * as file from "./file.js";
 
 var canvasWidth = 800, canvasHeight = 600;
 var ctx, n = 0, fps = 60;
@@ -20,7 +21,10 @@ let loopNum = 1;
 let nMax = 500;
 let beatsPerSecond = 124.0 / 60.0;
 let alpha = 1;
+let sizeSelect, circleSizeSelect, philoSizeSelect;
 
+const DEFAULT_NMAX = 400;
+const DEFAULT_LOOPNUM = 14;
 
 //Audio Variables
 const DEFAULTS = Object.freeze({
@@ -34,6 +38,8 @@ function init() {
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
+
+    file.readSongList();
 
     //Audio
     setupUI(canvas, audio.analyserNode);
@@ -95,27 +101,13 @@ function setupUI(canvasElement, analyserNodeRef) {
     //hook up song upload
     let fileInput = document.querySelector("#songUpload");
     fileInput.oninput = e => {
-        console.log(e.target.value);
-        var freader = new FileReader();
-        let option = document.createElement("option");
-        let file = e.target.files[0];
-        option.textContent = file.name;
-        console.log(file);
-        if ((file.type == "audio/mpeg" && file.size < 10000000) ||
-            (file.type == "audio/wav" && file.size < 40000000)) {
-            freader.onload = function (e) {
-                console.log(e);
-                option.value = e.target.result;
-                trackSelect.appendChild(option);
-                fileInput.value = "";
-            };
-            freader.readAsDataURL(file);
-        }
-        else {
-            window.alert("File too large");
-            fileInput.value = "";
-        }
+        //console.log(e.target.value);
+        file.readFile(e);
     };
+    let clearButton = document.querySelector("#clearButton");
+    clearButton.onclick = e => {
+        localStorage.clear();
+    }
 
     //hook up color select
     let colorSelect = document.querySelector("#colorSelect");
@@ -144,6 +136,10 @@ function setupUI(canvasElement, analyserNodeRef) {
             divergence = 4;
         }
     };
+    
+    sizeSelect = document.querySelector("#sizeSelect");
+    circleSizeSelect = document.querySelector("#circleSizeSelect");
+    philoSizeSelect = document.querySelector("#philoSizeSelect");
 
     //hook up opacity slider
     let opacitySlider = document.querySelector("#opacitySlider");
@@ -151,7 +147,7 @@ function setupUI(canvasElement, analyserNodeRef) {
 
     opacitySlider.oninput = e => {
         alpha = e.target.value;
-        opacityLabel.innerHTML = (e.target.value * 100) + '%';
+        opacityLabel.innerHTML = Math.round(e.target.value * 100) + '%';
     };
     opacitySlider.dispatchEvent(new Event("input"));
 
@@ -197,8 +193,36 @@ function loop() {
             //secondsPerPhilo = 1.0 / philoPerSecond;
             //nMax / (loopNum * fps) = 1.0 / beatsPerSecond;
             beatsPerSecond = audio.actualBPM / 60.0;
-            nMax = Math.round(110 * vol);
-            loopNum = Math.round(beatsPerSecond * nMax / 60.0);
+
+            switch(circleSizeSelect.value)
+            {
+                case "volume":
+                    size = vol * 2;
+                    break;
+                default:
+                    size = 4;
+                    break;
+            }
+
+            switch(sizeSelect.value)
+            {
+                case "volume":
+                    nMax = Math.round(110 * vol);
+                    break;
+                default:
+                    nMax = DEFAULT_NMAX;
+                    break;
+            }
+
+            switch(speedSelect.value)
+            {
+                case "beats":
+                    loopNum = Math.round(beatsPerSecond * nMax / 60.0 * 2.0);
+                    break;
+                default:
+                    loopNum = DEFAULT_LOOPNUM;
+                    break;
+            }
             //fps = nMax * beatsPerSecond / loopNum;
         }
         //size = 4;
@@ -223,8 +247,10 @@ function loop() {
 
     if (playButton.dataset.playing == "yes") {
         for (let loop = 0; loop < loopNum; loop++) {
-            createPhylotaxis(ctx, size, color, n, c);
-
+            if(n < nMax)
+            {
+                createPhylotaxis(ctx, size, color, n, c);
+            }
             n++;
             //c += 0.01;
         }
