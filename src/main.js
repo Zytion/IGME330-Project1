@@ -36,7 +36,7 @@ function init() {
     canvas.height = canvasHeight;
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    //file.readSongList();
+    file.readSongList();
 
     //Audio
     setupUI(canvas, audio.analyserNode);
@@ -99,6 +99,11 @@ function setupUI(canvasElement, analyserNodeRef) {
         fileInput.value = "";
     };
 
+    let clearButton = document.querySelector("#clearButton");
+    clearButton.onclick = e => {
+        localStorage.clear();
+    }
+
     let colorSelect = document.querySelector("#colorSelect");
     colorSelect.onchange = e => {
         colorChosen = e.target.value;
@@ -133,7 +138,7 @@ function setupUI(canvasElement, analyserNodeRef) {
 
     opacitySlider.oninput = e => {
         alpha = e.target.value;
-        opacityLabel.innerHTML = (e.target.value * 100) + '%';
+        opacityLabel.innerHTML = Math.round(e.target.value * 100) + '%';
     };
     opacitySlider.dispatchEvent(new Event("input"));
 

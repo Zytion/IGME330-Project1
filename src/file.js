@@ -1,29 +1,31 @@
 
 var songList = [];
-
+var reader;
 /*WIP storing uploaded songs in local storage for easy access*/
 function readSongList() {
+    reader = new FileReader();
     if (typeof (Storage) !== "undefined") {
         // Code for localStorage
-        if (localStorage.getItem('songList') != null) {
-            songList = JSON.parse(localStorage.getItem('songList'));
+        //console.log(localStorage);
+        if (localStorage.getItem('songlist') != null) {
+            songList = JSON.parse(localStorage.getItem('songlist'));
+            songList.forEach(song => {
+                //WIP
+                console.log(song.name);
+                //addOption(song.name, song.path);
+            });
         }
     } else {
         // No web storage Support.
         console.log("Local Storage Not Supported");
-
     }
-
 }
 
 function readFile(e) {
-    var freader = new FileReader();
-    let option = document.createElement("option");
     let file = e.target.files[0];
-    option.textContent = file.name;
     let duplicate = false;
     songList.forEach(element => {
-        if (element.name == song.name) {
+        if (element.name == file.name) {
             duplicate = true;
         }
     });
@@ -31,39 +33,32 @@ function readFile(e) {
     //Otherwise check if file size is not too large (in bytes)
     if (!duplicate && ((file.type == "audio/mpeg" && file.size < 10000000) ||
         (file.type == "audio/wav" && file.size < 40000000))) {
-        freader.onload = function (e) {
-            console.log(e);
-            option.value = e.target.result;
-            trackSelect.appendChild(option);
+        reader.onload = function (e) {
+            addOption(file.name, e.target.result);
             trackSelect.selectedIndex = trackSelect.length - 1;
             trackSelect.dispatchEvent(new Event("change"));
+           
+            if (typeof (Storage) !== "undefined") {
+                // Code for localStorage
+                let song = {
+                    name: file.name,
+                    path: URL.createObjectURL(file)
+                };
+                songList.push(song);
+                try {
+                    localStorage.setItem('songlist', JSON.stringify(songList));
+                } catch (error) {
+                    console.log(error);
+                }
 
-        
-            /*WIP storing uploaded songs in local storage for easy access*/
-            // if (typeof (Storage) !== "undefined") {
-            //     // Code for localStorage
-            //     let song = {
-            //         name: file.name,
-            //         index: trackSelect.length - 1,
-            //         path: e.target.result,
-            //     };
-            //     songList.push(song);
-            //     console.log(JSON.stringify(songList));
-
-            //     try {
-            //         localStorage.setItem('songList', JSON.stringify(songList));
-            //     } catch (error) {
-            //         console.log(error);
-            //     }
-
-            // } else {
-            //     // No web storage Support.
-            //     console.log("Local Storage Not Supported");
-            // }
+            } else {
+                // No web storage Support.
+                console.log("Local Storage Not Supported");
+            }
 
 
         };
-        freader.readAsDataURL(file);
+        reader.readAsDataURL(file);
     }
     else if (duplicate) {
         console.log("duplicate song detected!");
@@ -72,6 +67,14 @@ function readFile(e) {
         window.alert("File too large");
         fileInput.value = "";
     }
+}
+
+function addOption(name, path)
+{
+    let option = document.createElement("option");
+    option.textContent = name;
+    option.value = path;
+    trackSelect.appendChild(option);
 }
 
 export { readFile, readSongList }
