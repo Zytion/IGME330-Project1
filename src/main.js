@@ -52,7 +52,8 @@ function setupUI(canvasElement, analyserNodeRef) {
         console.log("init called");
         utils.goFullscreen(canvasElement);
     };
-
+    
+    //hook up play button
     playButton = document.querySelector('#playButton');
     playButton.onclick = e => {
         loopNum = Math.round(beatsPerSecond * nMax / fps);
@@ -71,15 +72,17 @@ function setupUI(canvasElement, analyserNodeRef) {
         }
     };
 
+    //hook up volume slider and label
     let volumeSlider = document.querySelector("#volumeSlider");
     let volumeLabel = document.querySelector("#volumeLabel");
-
     volumeSlider.oninput = e => {
         audio.setVolume(e.target.value);
         volumeLabel.innerHTML = Math.round((e.target.value / 2 * 100));
+        size = 2 * e.target.value + 1;
     };
     volumeSlider.dispatchEvent(new Event("input"));
 
+    //hook up track selection
     let trackSelect = document.querySelector("#trackSelect");
     trackSelect.selectedIndex = 0;
     trackSelect.onchange = e => {
@@ -89,6 +92,7 @@ function setupUI(canvasElement, analyserNodeRef) {
         }
     };
 
+    //hook up song upload
     let fileInput = document.querySelector("#songUpload");
     fileInput.oninput = e => {
         console.log(e.target.value);
@@ -113,11 +117,13 @@ function setupUI(canvasElement, analyserNodeRef) {
         }
     };
 
+    //hook up color select
     let colorSelect = document.querySelector("#colorSelect");
     colorSelect.onchange = e => {
         colorChosen = e.target.value;
     };
 
+    //hook up pattern select
     let patternSelect = document.querySelector("#patternSelect");
     patternSelect.onchange = e => {
         ctx.save();
@@ -127,21 +133,19 @@ function setupUI(canvasElement, analyserNodeRef) {
         if (e.target.value == 'regular') {
             n = 0;
             c = cDefault;
-            size = 4;
             divergence = 137.5;
         }
         else if (e.target.value == 'lines') {
             n = 0;
-            size = 2;
             divergence = 20;
         }
         else {
             n = 0;
-            size = 2;
             divergence = 4;
         }
     };
 
+    //hook up opacity slider
     let opacitySlider = document.querySelector("#opacitySlider");
     let opacityLabel = document.querySelector("#opacityLabel");
 
@@ -163,6 +167,7 @@ function setupUI(canvasElement, analyserNodeRef) {
 
 function loop() {
 
+    //loop through the n's
     if (n > nMax) {
         ctx.save();
         ctx.fillStyle = "rgba(0,0,0,0.8)"
@@ -199,6 +204,7 @@ function loop() {
         //size = 4;
     }
 
+    //choosing colors
     if (colorChosen == "rainbow") {
         color = `hsla(${n % hValue},100%,50%, ${alpha})`;
     }
@@ -220,7 +226,6 @@ function loop() {
             createPhylotaxis(ctx, size, color, n, c);
 
             n++;
-            // size += .01;
             //c += 0.01;
         }
     }
