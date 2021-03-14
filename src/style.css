@@ -1,6 +1,6 @@
 body {
 	background: #1b1e23;
-	font-family: tahoma, verdana, sans serif;
+	font-family: tahoma, verdana, "sans serif";
   color:#fafafa;
 }
 
@@ -57,7 +57,6 @@ h1 {
 #controls{
   display: grid;
   justify-content: left;
-  align-items: left;
   width: 285px;
   background-color: #2B2D2F;
   box-shadow: 0px 4px 8px rgba(0,0,0,0.5);
