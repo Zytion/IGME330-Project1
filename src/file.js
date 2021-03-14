@@ -1,7 +1,9 @@
 
 var songList = [];
 var reader;
-/*WIP storing uploaded songs in local storage for easy access*/
+
+/*NOT ADDED
+Reading songs stored in local storage*/
 function readSongList() {
     reader = new FileReader();
     if (typeof (Storage) !== "undefined") {
@@ -21,15 +23,19 @@ function readSongList() {
     }
 }
 
+//Read the file stored at the given file path
 function readFile(e) {
     let file = e.target.files[0];
     let fileInput = document.querySelector("#songUpload");
+
+    //Check if the song has already been added
     let duplicate = false;
     songList.forEach(element => {
         if (element.name == file.name) {
             duplicate = true;
         }
     });
+
     //Skip if duplicate
     //Otherwise check if file size is not too large (in bytes)
     if (!duplicate && ((file.type == "audio/mpeg" && file.size < 10000000) ||
@@ -48,6 +54,8 @@ function readFile(e) {
                     //path: e.target.result
                 };
                 songList.push(song);
+
+                ////Store the song list to local storage
                 // try {
                 //     localStorage.setItem('songlist', JSON.stringify(songList));
                 // } catch (error) {
@@ -72,6 +80,7 @@ function readFile(e) {
     fileInput.value = "";
 }
 
+//Adds the song to the song list dropdown
 function addOption(name, path)
 {
     let option = document.createElement("option");

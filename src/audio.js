@@ -6,7 +6,7 @@ let audioCtx;
 
 // **These are "private" properties - these will NOT be visible outside of this module (i.e. file)**
 // 2 - WebAudio nodes that are part of our WebAudio audio routing graph
-let element, sourceNode, analyserNode, gainNode, actualBPM, timeToPeak1;
+let element, sourceNode, analyserNode, gainNode, actualBPM;
 
 let filterThreshold = 0.6;
 let skipRate = 2000;
@@ -68,6 +68,7 @@ function setupWebaudio(filePath) {
     gainNode.connect(audioCtx.destination);
 }
 
+//Begins loading the sound file
 function loadSoundFile(filePath) {
     bpmText.textContent = `Loading...`;
     confidenceText.textContent = "";
@@ -92,6 +93,7 @@ function getVolume() {
     return gainNode.gain.value;
 }
 
+//Gets the data from the file at the URL
 function getData(url) {
     var source = audioCtx.createBufferSource();
     var request = new XMLHttpRequest();
@@ -100,16 +102,22 @@ function getData(url) {
 
     request.responseType = 'arraybuffer';
 
+    //Once loaded
     request.onload = function () {
+        //store the audio data
         var audioData = request.response;
 
+        //Then decode that data
         audioCtx.decodeAudioData(audioData, function (buffer) {
+            //Store the decoded data
             source.buffer = buffer;
-
             source.connect(audioCtx.destination);
-            //Reset values
+            
+            //Reset values for BPM calculation
             confidence = 0;
             filterThreshold = 0.6;
+
+            //Calulate the BPM
             getBPM(buffer);
         },
             function (e) { console.log("Error with decoding audio data" + e.err); });
@@ -150,7 +158,8 @@ function getBPM(buffer) {
         var top = groups.sort(function (intA, intB) {
             return intB.count - intA.count;
         }).splice(0, 5);
-        //Lower threshold and try again if no tempos were found
+        
+        //Stop looping calculation if the threshold drops below 0
         if(filterThreshold <= 0)
         {
             actualBPM = 120;
@@ -158,16 +167,25 @@ function getBPM(buffer) {
             confidenceText.textContent = "Confidence = NaN";
             return;
         }
+
+        //Lower threshold and try again if no tempos were found
+        //or if the confidence is 0.
         if(top.length == 0 || (top[0].count - top[1].count) <= 0)
         {
             filterThreshold -= 0.1;
             getBPM(buffer);
             return;
         }
+        //Once a BPM is found
+
+        //Calculate the confidence value
         confidence = ((top[0].count - top[1].count) * 2) < 100 ? ((top[0].count - top[1].count) * 2) : 100;
+        //Get the BPM
         actualBPM = Math.round(top[0].tempo);
+        //Update the text with the new values
         bpmText.innerHTML = `BPM = ${actualBPM}`;
         confidenceText.textContent = `Confidence = ${confidence}%`;
+        //Set to 120 if BPM was not found
         if(isNaN(actualBPM))
         {
             actualBPM = 120;
@@ -190,7 +208,6 @@ function getPeaksAtThreshold(data, threshold) {
         }
         i++;
     }
-    timeToPeak1 = peaksArray[0];
     return peaksArray;
 }
 
@@ -248,4 +265,4 @@ function groupNeighborsByTempo(data, threshold, sampleRate) {
     return tempoCounts;
 }
 
-export { audioCtx, setupWebaudio, playCurrentSound, pauseCurrentSound, loadSoundFile, setVolume, getVolume, analyserNode, actualBPM, timeToPeak1}
+export { audioCtx, setupWebaudio, playCurrentSound, pauseCurrentSound, loadSoundFile, setVolume, getVolume, analyserNode, actualBPM}

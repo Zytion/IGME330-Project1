@@ -22,9 +22,10 @@ let nMax = 500;
 let beatsPerSecond = 124.0 / 60.0;
 let beatMultiplier = 1;
 let alpha = 1;
-let sizeSelect, circleSizeSelect, philoSizeSelect;
+let circleSizeSelect, philoSizeSelect;
 let playBeats;
 
+//default values
 const DEFAULT_NMAX = 400;
 const DEFAULT_LOOPNUM = 14;
 
@@ -33,6 +34,7 @@ const DEFAULTS = Object.freeze({
     sound1: "media/Unknown.mp3"
 });
 
+//Resize canvas if the screen size changes from above 800 to below
 function windowResize() {
     if (canvasWidth == 400 && window.innerWidth > 800) {
         canvasWidth = 800, canvasHeight = 600;
@@ -54,6 +56,7 @@ function init() {
     let canvas = document.querySelector('canvas');
     ctx = canvas.getContext("2d");
 
+    //Set up window resizing
     window.onresize = windowResize;
     windowResize();
 
@@ -61,7 +64,8 @@ function init() {
     canvas.height = canvasHeight;
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    file.readSongList();
+    // //Load any stored songs from local storage
+    // file.readSongList();
 
     //Audio
     setupUI(canvas, audio.analyserNode);
@@ -100,6 +104,7 @@ function setupUI(canvasElement, analyserNodeRef) {
         }
     };
 
+    //Hook up radio buttons for BPM multiplier
     var rad = document.querySelectorAll('input[name="Speed"]');
     var bpmText = document.querySelector(`#BPM`);
     rad[1].checked = true;
@@ -156,12 +161,14 @@ function setupUI(canvasElement, analyserNodeRef) {
 
     //hook up color select
     let colorSelect = document.querySelector("#colorSelect");
+    colorSelect.selectedIndex = 0;
     colorSelect.onchange = e => {
         colorChosen = e.target.value;
     };
 
     //hook up pattern select
     let patternSelect = document.querySelector("#patternSelect");
+    patternSelect.selectedIndex = 0;
     patternSelect.onchange = e => {
         ctx.save();
         ctx.fillColor = 'black';
@@ -182,7 +189,7 @@ function setupUI(canvasElement, analyserNodeRef) {
         }
     };
 
-
+    //Hooks up swiches from BPM mode to Melody mode
     playBeats = true;
     var beatsSettings = document.querySelector("#beatsSettings");
     var phyllotype = document.querySelectorAll('input[name="type"]');
@@ -190,15 +197,17 @@ function setupUI(canvasElement, analyserNodeRef) {
     for (var i = 0; i < phyllotype.length; i++) {
         phyllotype[i].addEventListener('change', function () {
             switch (this.id) {
+                //Switch to meldoy drawing values
                 case "melody":
                     nMax = 512;
                     divergence = 4;
                     size = 4;
                     beatsPerSecond = Math.trunc(audio.actualBPM * beatMultiplier) / 60.0;
-                    loopNum = Math.round(beatsPerSecond * nMax / 60.0 * 2.0);
+                    loopNum = Math.round(beatsPerSecond * nMax / 60.0);
                     playBeats = false;
                     beatsSettings.className = 'hidden';
                     break;
+                //Switch back to default drawing
                 default:
                     beatsSettings.className = '';
                     patternSelect.dispatchEvent(new Event('change'));
@@ -208,9 +217,11 @@ function setupUI(canvasElement, analyserNodeRef) {
         });
     }
 
-    sizeSelect = document.querySelector("#sizeSelect");
+    //Hook up remaining seletors
     circleSizeSelect = document.querySelector("#circleSizeSelect");
     philoSizeSelect = document.querySelector("#philoSizeSelect");
+    philoSizeSelect.selectedIndex = 0;
+    circleSizeSelect.selectedIndex = 1;
 
     //hook up opacity slider
     let opacitySlider = document.querySelector("#opacitySlider");
@@ -254,6 +265,7 @@ function loop() {
 
 
             if (playBeats) {
+                /*CACLULATIONS
                 // philoPerSecond = beatsPerSecond;
                 // dotPerFrame = loopNum;
                 // dotPerSecond = dotPerFrame * fps;
@@ -264,6 +276,7 @@ function loop() {
 
                 //secondsPerPhilo = 1.0 / philoPerSecond;
                 //nMax / (loopNum * fps) = 1.0 / beatsPerSecond;
+                */
                 beatsPerSecond = Math.trunc(audio.actualBPM * beatMultiplier) / 60.0;
 
                 switch (circleSizeSelect.value) {
@@ -275,7 +288,7 @@ function loop() {
                         break;
                 }
 
-                switch (sizeSelect.value) {
+                switch (philoSizeSelect.value) {
                     case "volume":
                         nMax = Math.round(110 * vol);
                         break;
@@ -294,8 +307,7 @@ function loop() {
                 }
                 //fps = nMax * beatsPerSecond / loopNum;
             }
-            else
-            {
+            else {
                 beatsPerSecond = Math.trunc(audio.actualBPM * beatMultiplier) / 60.0;
                 loopNum = Math.round(beatsPerSecond * nMax / 60.0);
                 analyserNode.getByteTimeDomainData(audioData);
@@ -306,6 +318,7 @@ function loop() {
     }
 
     if (playButton.dataset.playing == "yes") {
+        //loopNum is used to 
         for (let loop = 0; loop < loopNum; loop++) {
             if (n < nMax) {
                 //choosing colors
@@ -324,15 +337,16 @@ function loop() {
                 else {
                     color = `hsla(${1 - n % hValue},100%,50%, ${alpha})`;
                 }
-
-                if(!playBeats)
-                {
-                    if(audioData[n % 128] > 120)
-                        size =  audioData[n % 128] / 200 * 10;
+                //Melody drawing
+                if (!playBeats) {
+                    //This is used to exagerate the smaller and larger values
+                    if (audioData[n % 128] > 120)
+                        size = audioData[n % 128] / 200 * 10;
                     else
-                    size =  audioData[n % 128] / 200 * 8;
+                        size = audioData[n % 128] / 200 * 8;
                 }
 
+                //Draw circle
                 createPhylotaxis(ctx, size, color, n, c);
             }
             n++;
