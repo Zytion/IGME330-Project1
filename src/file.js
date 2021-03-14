@@ -23,6 +23,7 @@ function readSongList() {
 
 function readFile(e) {
     let file = e.target.files[0];
+    let fileInput = document.querySelector("#songUpload");
     let duplicate = false;
     songList.forEach(element => {
         if (element.name == file.name) {
@@ -46,12 +47,12 @@ function readFile(e) {
                     path: URL.createObjectURL(file)
                     //path: e.target.result
                 };
-                //songList.push(song);
-                try {
-                    localStorage.setItem('songlist', JSON.stringify(songList));
-                } catch (error) {
-                    console.log(error);
-                }
+                songList.push(song);
+                // try {
+                //     localStorage.setItem('songlist', JSON.stringify(songList));
+                // } catch (error) {
+                //     console.log(error);
+                // }
 
             } else {
                 // No web storage Support.
@@ -66,9 +67,9 @@ function readFile(e) {
         console.log("duplicate song detected!");
     }
     else {
-        window.alert("File too large");
-        fileInput.value = "";
+        window.alert(`File is too large:\n${file.name}`);
     }
+    fileInput.value = "";
 }
 
 function addOption(name, path)

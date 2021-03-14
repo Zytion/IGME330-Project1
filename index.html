@@ -25,85 +25,101 @@
                     <label>Track:
                         <select id="trackSelect">
                             <option value="./media/Unknown.mp3" selected>Unknown for M.E.</option>
-                            <option value="./media/allstart-instrumental.wav">All Star</option>
+                            <option value="./media/leanonme.mp3">Lean on Me</option>
                             <option value="./media/brainpower.mp3">Brain Power</option>
+                            <option value="./media/120bpm.mp3">120 BPM Metronome</option>
                         </select>
                     </label>
                     <div class="input" id="fileUpload">
-                        <label>Files:</label>
-                        <label for="songUpload">Upload File</label>
                         <input type="file" name="songUpload" id="songUpload" accept=".mp3,.wav">
-                        <button id="clearButton">Clear Cache</button>
+                        <label for="songUpload">Add Song</label>
                     </div>
-                    <div id="BPM">Song BPM = 124</div>
-                </div>
 
+                    <div id="BPM">Song BPM = 124</div>
+                    <div id="confidence">Confidence = 100%</div>
+
+                </div>
+                <h3 class="input">Song Settings:</h3>
+                <div class="input" id="bpmmulti">
+                    <div>Speed:</div>
+                    <input type="radio" name="Speed" id="halfspeed">
+                    <label for="halfspeed">1/2</label>
+                    <input type="radio" name="Speed" id="normalspeed">
+                    <label for="normalspeed">Normal</label>
+                    <input type="radio" name="Speed" id="doublespeed">
+                    <label for="doublespeed">2</label>
+                </div>
                 <div class="input">
                     Volume: <input type="range" id="volumeSlider" min="0" max="2" value="1" step="0.01">
                     <span id="volumeLabel">???</span>
                 </div>
 
                 <!-- PHYLOTAXIS SETTINGS -->
-                <div class="input">
-                    <label>Color:
-                        <select id="colorSelect">
-                            <option value="rainbow" selected>Rainbow</option>
-                            <option value="candy">Candy</option>
-                            <option value="cool">Cool</option>
-                            <option value="ocean">Ocean</option>
-                            <option value="reverse">Reverse</option>
-                        </select>
-                    </label>
-                </div>
-                <div class="input">
-                    <label>Pattern:
-                        <select id="patternSelect">
-                            <option value="regular" selected>Regular</option>
-                            <option value="lines">Lines</option>
-                            <option value="spiral">Spiral</option>
-                        </select>
-                    </label>
-                </div>
-                <!--TODO-->
-                <div class="input">
-                    <label>Speed Mode:
-                        <select id="speedSelect">
-                            <option value="beats" selected>Beats</option>
-                            <option value="constant" selected>Constant</option>
-                        </select>
-                    </label>
-                </div>
-                <!--TODO-->
-                <div class="input">
-                    <label>Philo Size Mode:
-                        <select id="sizeSelect">
-                            <option value="volume" selected>Volume</option>
-                            <option value="constant" selected>Constant</option>
-                        </select>
-                    </label>
-                </div>
-                <!--TODO-->
-                <div class="input">
-                    <label>Circle Size Mode:
-                        <select id="circleSizeSelect">
-                            <option value="constant" selected>Constant</option>
-                            <option value="volume" selected>Volume</option>
-                        </select>
-                    </label>
-                </div>
-                <div class="input">
-                    Opacity: <input type="range" id="opacitySlider" min="0.1" max="1" value="1" step="0.01">
-                    <span id="opacityLabel">???</span>
+                <div id="PhiloSettings">
+                    <h3 class="input">Philo Settings:</h3>
+                    <div class="input">
+                        <label>Color:
+                            <select id="colorSelect">
+                                <option value="rainbow" selected>Rainbow</option>
+                                <option value="candy">Candy</option>
+                                <option value="cool">Cool</option>
+                                <option value="ocean">Ocean</option>
+                                <option value="reverse">Reverse</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="input">
+                        <label>Pattern:
+                            <select id="patternSelect">
+                                <option value="regular" selected>Regular</option>
+                                <option value="lines">Lines</option>
+                                <option value="spiral">Spiral</option>
+                            </select>
+                        </label>
+                    </div>
+                    <!--TODO-->
+                    <div class="input">
+                        <label>Speed Mode:
+                            <select id="speedSelect">
+                                <option value="beats" selected>Beats</option>
+                                <option value="constant" selected>Constant</option>
+                            </select>
+                        </label>
+                    </div>
+                    <!--TODO-->
+                    <div class="input">
+                        <label>Philo Size Mode:
+                            <select id="sizeSelect">
+                                <option value="volume" selected>Volume</option>
+                                <option value="constant" selected>Constant</option>
+                            </select>
+                        </label>
+                    </div>
+                    <!--TODO-->
+                    <div class="input">
+                        <label>Circle Size Mode:
+                            <select id="circleSizeSelect">
+                                <option value="constant" selected>Constant</option>
+                                <option value="volume" selected>Volume</option>
+                            </select>
+                        </label>
+                    </div>
+                    <div class="input">
+                        Opacity: <input type="range" id="opacitySlider" min="0.1" max="1" value="1" step="0.01">
+                        <span id="opacityLabel">???</span>
+                    </div>
                 </div>
             </div>
         </div>
         <div id="instructions">
             <h2>Instructions</h2>
             <div>
-                To start the PhyloAudio, press play. You can upload a song of your choosing as well if you do not like the selection. There are plenty of settings to play with to customize your PhyloAudio!
+                To start the PhyloAudio, press play. You can upload a song of your choosing as well if you do not like
+                the selection. There are plenty of settings to play with to customize your PhyloAudio!
             </div>
             <div>
-                To upload a song, they must be either in .mp3 or .wav format. Once you upload them, press play and listen to your custom song!
+                To upload a song, they must be either in .mp3 or .wav format. Once you upload them, press play and
+                listen to your custom song!
             </div>
         </div>
     </main>

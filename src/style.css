@@ -25,6 +25,13 @@ main {
 #instructions > * {
   margin: 5px 0;
 }
+#bpmmulti {
+  display: flex;
+  flex-flow: row nowrap;
+}
+#bpmmulti > * {
+  margin-right: 5px;
+}
 
 header {
   display: flex;
@@ -51,7 +58,6 @@ h1 {
 }
 
 .input {
-  width: 100%;
   padding: .5em;
   margin-top: .5rem;
 }
@@ -82,7 +88,7 @@ section{
 }
 
 #songUpload {
-  display: none; 
+  display: none;
 }
 
 label[for=songUpload]
@@ -91,7 +97,12 @@ label[for=songUpload]
   color: black;
   border: solid black 1.4px;
   font-size: 0.8em;
-  padding: 0 8px;
+  padding: 4px 8px;
+  cursor: pointer;
+}
+
+label[for=songUpload]:hover{
+  border: solid skyblue 1.4px;
 }
 
 #fileUpload {
@@ -100,6 +111,10 @@ label[for=songUpload]
   width: max-content;
   justify-content: space-between;
   padding: 0;
+}
+
+input, button {
+  cursor: pointer;
 }
 
 #fileUpload > * {
@@ -121,4 +136,25 @@ button[data-playing="no"]:after{
 
 #BPM {
   margin-top: .5em;
+}
+
+h3 {
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+#opacitySlider {
+  max-width: 10em;
+}
+
+@media only screen and (max-width: 800px) {
+  #sidebyside {
+    flex-flow: column nowrap;
+  }
+  #controls {
+    width: 100%;
+  }
+  #instructions {
+    width: 400px;
+  }
 }

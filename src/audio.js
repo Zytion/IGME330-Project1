@@ -1,14 +1,18 @@
+//BPM cacluation is based on Blog post "Beat Detection Using JavaScript and the Web Audio API" By Joe Sullivan
+//http://joesul.li/van/beat-detection-using-web-audio/
+
 // 1 - our WebAudio context, **we will export and make this public at the bottom of the file**
 let audioCtx;
 
 // **These are "private" properties - these will NOT be visible outside of this module (i.e. file)**
 // 2 - WebAudio nodes that are part of our WebAudio audio routing graph
-let element, sourceNode, analyserNode, gainNode, actualBPM;
+let element, sourceNode, analyserNode, gainNode, actualBPM, timeToPeak1;
 
 let filterThreshold = 0.6;
-let skipRate = 1000;
-let bpmText = document.querySelector('#BPM');
-
+let skipRate = 2000;
+let bpmText;
+let confidenceText;
+let confidence = 0;
 // 3 - here we are faking an enumeration
 const DEFAULTS = Object.freeze({
     gain: 0.5,
@@ -21,6 +25,9 @@ let audioData = new Uint8Array(DEFAULTS.numSamples / 2);
 
 // **Next are "public" methods - we are going to export all of these at the bottom of this file**
 function setupWebaudio(filePath) {
+    bpmText = document.querySelector('#BPM');
+    confidenceText = document.querySelector('#confidence');
+
     // 1 - The || is because WebAudio has not been standardized across browsers yet
     const AudioContext = window.AudioContext || window.webkitAudioContext;
     audioCtx = new AudioContext();
@@ -63,6 +70,7 @@ function setupWebaudio(filePath) {
 
 function loadSoundFile(filePath) {
     bpmText.textContent = `Loading...`;
+    confidenceText.textContent = "";
     element.src = filePath;
     getData(filePath);
 }
@@ -99,15 +107,17 @@ function getData(url) {
             source.buffer = buffer;
 
             source.connect(audioCtx.destination);
+            //Reset values
+            confidence = 0;
+            filterThreshold = 0.6;
             getBPM(buffer);
         },
-
             function (e) { console.log("Error with decoding audio data" + e.err); });
-
     }
-
     request.send();
 }
+
+//Gets the BPM of the song using the given buffer data
 function getBPM(buffer) {
     // Create offline context
     var offlineContext = new OfflineAudioContext(1, buffer.length, buffer.sampleRate);
@@ -134,27 +144,41 @@ function getBPM(buffer) {
     offlineContext.oncomplete = function (e) {
         // Filtered buffer!
         var filteredBuffer = e.renderedBuffer;
+        //Get the list of most likely tempos for the song
         let groups = groupNeighborsByTempo(filteredBuffer.getChannelData(0), filterThreshold, buffer.sampleRate);
+        //Take the most likely song tempo
         var top = groups.sort(function (intA, intB) {
             return intB.count - intA.count;
         }).splice(0, 5);
-        if(top.length == 0)
+        //Lower threshold and try again if no tempos were found
+        if(filterThreshold <= 0)
+        {
+            actualBPM = 120;
+            bpmText.textContent = `BPM = NaN (Using 120 BPM)`;
+            confidenceText.textContent = "Confidence = NaN";
+            return;
+        }
+        if(top.length == 0 || (top[0].count - top[1].count) <= 0)
         {
             filterThreshold -= 0.1;
             getBPM(buffer);
             return;
         }
+        confidence = (top[0].count - top[1].count) < 100 ? (top[0].count - top[1].count) : 100;
         actualBPM = Math.round(top[0].tempo);
-        console.log("Actual BPM: " + actualBPM);
-        bpmText.textContent = `BPM = ${actualBPM}`;
+        bpmText.innerHTML = `BPM = ${actualBPM}`;
+        confidenceText.textContent = `Confidence = ${confidence}%`;
         if(isNaN(actualBPM))
         {
             actualBPM = 120;
             bpmText.textContent = `BPM = NaN (Using 120 BPM)`;
+            confidenceText.textContent = "Confidence = NaN";
         }
     };
 }
 
+//Takes lowpass filtered song data and a threshold value (0-1)
+//returns a list of the peaks over the threashold
 function getPeaksAtThreshold(data, threshold) {
     var peaksArray = [];
     var length = data.length;
@@ -166,9 +190,12 @@ function getPeaksAtThreshold(data, threshold) {
         }
         i++;
     }
+    timeToPeak1 = peaksArray[0];
     return peaksArray;
 }
 
+//Gets the peaks from getPeaksAtThreshold
+//Returns the time between the peaks
 function countIntervalsBetweenNearbyPeaks(data, threshold) {
     var intervalCounts = [];
     var peaks = getPeaksAtThreshold(data, threshold);
@@ -190,7 +217,8 @@ function countIntervalsBetweenNearbyPeaks(data, threshold) {
     return intervalCounts;
 }
 
-
+//Gets the interval counts from countIntervalsBetweenNearbyPeaks
+//Returns a sorted list of most likely tempos for the song (most likely to least likely)
 function groupNeighborsByTempo(data, threshold, sampleRate) {
     var tempoCounts = [];
     let intervalCounts = countIntervalsBetweenNearbyPeaks(data, threshold);
@@ -220,4 +248,4 @@ function groupNeighborsByTempo(data, threshold, sampleRate) {
     return tempoCounts;
 }
 
-export { audioCtx, setupWebaudio, playCurrentSound, pauseCurrentSound, loadSoundFile, setVolume, getVolume, analyserNode, actualBPM}
+export { audioCtx, setupWebaudio, playCurrentSound, pauseCurrentSound, loadSoundFile, setVolume, getVolume, analyserNode, actualBPM, timeToPeak1}
