@@ -164,7 +164,7 @@ function getBPM(buffer) {
             getBPM(buffer);
             return;
         }
-        confidence = (top[0].count - top[1].count) < 100 ? (top[0].count - top[1].count) : 100;
+        confidence = ((top[0].count - top[1].count) * 2) < 100 ? ((top[0].count - top[1].count) * 2) : 100;
         actualBPM = Math.round(top[0].tempo);
         bpmText.innerHTML = `BPM = ${actualBPM}`;
         confidenceText.textContent = `Confidence = ${confidence}%`;
@@ -227,8 +227,8 @@ function groupNeighborsByTempo(data, threshold, sampleRate) {
             // Convert an interval to tempo
             var theoreticalTempo = 60 / (intervalCount.interval / sampleRate);
 
-            // Adjust the tempo to fit within the 90-180 BPM range
-            while (theoreticalTempo < 90) theoreticalTempo *= 2;
+            // Adjust the tempo to fit within the 70-180 BPM range
+            while (theoreticalTempo < 70) theoreticalTempo *= 2;
             while (theoreticalTempo > 180) theoreticalTempo /= 2;
 
             theoreticalTempo = Math.round(theoreticalTempo);

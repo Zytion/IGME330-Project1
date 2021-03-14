@@ -24,7 +24,7 @@ let beatMultiplier = 1;
 let alpha = 1;
 let sizeSelect, circleSizeSelect, philoSizeSelect;
 
-const DEFAULT_NMAX = 400;
+const DEFAULT_NMAX = 384;
 const DEFAULT_LOOPNUM = 14;
 
 //Audio Variables
@@ -57,6 +57,10 @@ function init() {
 
     window.onresize = windowResize;
     windowResize();
+    
+    canvas.width = canvasWidth;
+    canvas.height = canvasHeight;
+    ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
     file.readSongList();
 

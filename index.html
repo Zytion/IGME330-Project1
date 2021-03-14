@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>PhyloAudio</title>
+    <title>PhylloAudio</title>
     <link href="src/style.css" type="text/css" rel="stylesheet" />
     <script type="module" src="./src/loader.js"></script>
 </head>
@@ -11,7 +11,7 @@
 <body>
     <main>
         <header>
-            <h1>PhyloAudio</h1>
+            <h1>PhylloAudio</h1>
         </header>
         <div id="sidebyside">
             <canvas width="800" height="600"></canvas>
@@ -22,7 +22,7 @@
                     <button id="fsButton">Fullscreen</button>
                 </div>
                 <div class="input">
-                    <label>Track:
+                    <label>Song:
                         <select id="trackSelect">
                             <option value="./media/Unknown.mp3" selected>Unknown for M.E.</option>
                             <option value="./media/leanonme.mp3">Lean on Me</option>
@@ -41,7 +41,7 @@
                 </div>
                 <h3 class="input">Song Settings:</h3>
                 <div class="input" id="bpmmulti">
-                    <div>Speed:</div>
+                    <div>BPM Speed:</div>
                     <input type="radio" name="Speed" id="halfspeed">
                     <label for="halfspeed">1/2</label>
                     <input type="radio" name="Speed" id="normalspeed">
@@ -56,11 +56,11 @@
 
                 <!-- PHYLOTAXIS SETTINGS -->
                 <div id="PhiloSettings">
-                    <h3 class="input">Philo Settings:</h3>
+                    <h3 class="input">Phyllotaxy Settings:</h3>
                     <div class="input">
                         <label>Color:
                             <select id="colorSelect">
-                                <option value="rainbow" selected>Rainbow</option>
+                                <option value="rainbow">Rainbow</option>
                                 <option value="candy">Candy</option>
                                 <option value="cool">Cool</option>
                                 <option value="ocean">Ocean</option>
@@ -71,7 +71,7 @@
                     <div class="input">
                         <label>Pattern:
                             <select id="patternSelect">
-                                <option value="regular" selected>Regular</option>
+                                <option value="regular">Regular</option>
                                 <option value="lines">Lines</option>
                                 <option value="spiral">Spiral</option>
                             </select>
@@ -81,26 +81,26 @@
                     <div class="input">
                         <label>Speed Mode:
                             <select id="speedSelect">
-                                <option value="beats" selected>Beats</option>
-                                <option value="constant" selected>Constant</option>
+                                <option value="beats">Beats</option>
+                                <option value="constant">BPM = 124</option>
                             </select>
                         </label>
                     </div>
                     <!--TODO-->
                     <div class="input">
-                        <label>Philo Size Mode:
+                        <label>Phyllotaxy Size Mode:
                             <select id="sizeSelect">
-                                <option value="volume" selected>Volume</option>
-                                <option value="constant" selected>Constant</option>
+                                <option value="volume">Volume</option>
+                                <option value="constant">384 Dots</option>
                             </select>
                         </label>
                     </div>
                     <!--TODO-->
                     <div class="input">
-                        <label>Circle Size Mode:
+                        <label>Dot Size Mode:
                             <select id="circleSizeSelect">
-                                <option value="constant" selected>Constant</option>
-                                <option value="volume" selected>Volume</option>
+                                <option value="volume">Volume</option>
+                                <option value="constant">8 pixels wide</option>
                             </select>
                         </label>
                     </div>
@@ -114,12 +114,51 @@
         <div id="instructions">
             <h2>Instructions</h2>
             <div>
+                The goal of PhyloAudio is to combine phyllotaxy drawing with audio visualization.
+            </div>
+            <div>
                 To start the PhyloAudio, press play. You can upload a song of your choosing as well if you do not like
                 the selection. There are plenty of settings to play with to customize your PhyloAudio!
             </div>
             <div>
+                <h3>Song Selection</h3>
+                You can select a song from the drop down menu. Picking a song will load it into the PhyloAudio player.
+                This cacluates the BPM of the song and starts to pull audio data from it.
+                <h4>Uploading Audio</h4>
                 To upload a song, they must be either in .mp3 or .wav format. Once you upload them, press play and
                 listen to your custom song!
+                <h4>What is BPM?</h4>
+                Beats per minute (BPM) is a measurement of how fast a song is.
+                <h4>What is Confidence?</h4>
+                The program attempts to filter the song data and count every beat that occurs and then estimates what
+                the most likely BPM would be, but it is not an exact process. The confidence value is determined by how
+                confident the program is that the listed BPM is correct. A value greater than 50% means that the program
+                is very confident that it has the correct BPM.
+            </div>
+            <div>
+                <h3>Song Settings</h3>
+                Once a song is loaded you have two settings options for the song. The speed setting is to get show the
+                beats in cut time (2x BPM) and half time (1/2x BPM), <b>it does not change how the song is played</b>. This
+                helps if the flashing is hurting your eyes. You can also adjust how long the song is playing which will
+                effect the phyllotaxy size (if that setting is enabled).
+            </div>
+            <div>
+                <h3>Phyllotaxy Settings:</h3>
+                <h4>Color</h4>
+                5 different color presets (Raindow, Candy, Cool, Ocean, and Reverse Raindow). These all draw based on
+                the position of the circle in the phyllotaxy.
+                <h4>Pattern</h4>
+                Changes the divergence angle of the phyllotaxy, creating a different type of pattern drawn. (Regular =
+                137.5, Lines = 20, Spiral = 4)
+                <h4>Speed Mode</h4>
+                You can set the speed at which the circles are drawn. Beats means that the entire phyllotaxy is drawn
+                per beat of the song. Constant sets the speed to draw the phyllotaxy every 2 seconds.
+                <h4>Phyllotaxy Size Mode</h4>
+                Determines the size of the phyllotaxy. Volume means the that phyllotaxy scales with how loud the music
+                is. Constant will draw 384 circles per phyllotaxy.
+                <h4>Dot Size Mode</h4>
+                Determines the size of the circles that make up the phyllotaxy. Volume means the that dots scale with
+                how loud the music is. Constant will draw circles that are 8 pixels wide.
             </div>
         </div>
     </main>
