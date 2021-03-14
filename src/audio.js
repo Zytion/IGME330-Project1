@@ -1,4 +1,4 @@
-//BPM cacluation is based on Blog post "Beat Detection Using JavaScript and the Web Audio API" By Joe Sullivan
+//BPM calculation is based on Blog post "Beat Detection Using JavaScript and the Web Audio API" By Joe Sullivan
 //http://joesul.li/van/beat-detection-using-web-audio/
 
 // 1 - our WebAudio context, **we will export and make this public at the bottom of the file**
