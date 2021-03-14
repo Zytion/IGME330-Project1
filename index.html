@@ -53,10 +53,15 @@
                     Volume: <input type="range" id="volumeSlider" min="0" max="2" value="1" step="0.01">
                     <span id="volumeLabel">???</span>
                 </div>
-
                 <!-- PHYLOTAXIS SETTINGS -->
-                <div id="PhiloSettings">
+                <div id="philoSettings">
                     <h3 class="input">Phyllotaxy Settings:</h3>
+                    <div class="input">
+                        <input type="radio" name="type" id="beat">
+                        <label for="beat">BPM Based</label>
+                        <input type="radio" name="type" id="melody">
+                        <label for="melody">Melody Based</label>
+                    </div>
                     <div class="input">
                         <label>Color:
                             <select id="colorSelect">
@@ -68,47 +73,50 @@
                             </select>
                         </label>
                     </div>
-                    <div class="input">
-                        <label>Pattern:
-                            <select id="patternSelect">
-                                <option value="regular">Regular</option>
-                                <option value="lines">Lines</option>
-                                <option value="spiral">Spiral</option>
-                            </select>
-                        </label>
-                    </div>
-                    <!--TODO-->
-                    <div class="input">
-                        <label>Speed Mode:
-                            <select id="speedSelect">
-                                <option value="beats">Beats</option>
-                                <option value="constant">BPM = 124</option>
-                            </select>
-                        </label>
-                    </div>
-                    <!--TODO-->
-                    <div class="input">
-                        <label>Phyllotaxy Size Mode:
-                            <select id="sizeSelect">
-                                <option value="volume">Volume</option>
-                                <option value="constant">384 Dots</option>
-                            </select>
-                        </label>
-                    </div>
-                    <!--TODO-->
-                    <div class="input">
-                        <label>Dot Size Mode:
-                            <select id="circleSizeSelect">
-                                <option value="volume">Volume</option>
-                                <option value="constant">8 pixels wide</option>
-                            </select>
-                        </label>
+                    <div id="beatsSettings">
+                        <div class="input">
+                            <label>Pattern:
+                                <select id="patternSelect">
+                                    <option value="regular">Regular</option>
+                                    <option value="lines">Lines</option>
+                                    <option value="spiral">Spiral</option>
+                                </select>
+                            </label>
+                        </div>
+                        <!--TODO-->
+                        <div class="input">
+                            <label>Speed Mode:
+                                <select id="speedSelect">
+                                    <option value="beats">Beats</option>
+                                    <option value="constant">BPM = 124</option>
+                                </select>
+                            </label>
+                        </div>
+                        <!--TODO-->
+                        <div class="input">
+                            <label>Phyllotaxy Size Mode:
+                                <select id="sizeSelect">
+                                    <option value="volume">Volume</option>
+                                    <option value="constant">384 Dots</option>
+                                </select>
+                            </label>
+                        </div>
+                        <!--TODO-->
+                        <div class="input">
+                            <label>Dot Size Mode:
+                                <select id="circleSizeSelect">
+                                    <option value="volume">Volume</option>
+                                    <option value="constant">8 pixels wide</option>
+                                </select>
+                            </label>
+                        </div>
                     </div>
                     <div class="input">
                         Opacity: <input type="range" id="opacitySlider" min="0.1" max="1" value="1" step="0.01">
                         <span id="opacityLabel">???</span>
                     </div>
                 </div>
+
             </div>
         </div>
         <div id="instructions">
@@ -138,12 +146,18 @@
             <div>
                 <h3>Song Settings</h3>
                 Once a song is loaded you have two settings options for the song. The speed setting is to get show the
-                beats in cut time (2x BPM) and half time (1/2x BPM), <b>it does not change how the song is played</b>. This
+                beats in cut time (2x BPM) and half time (1/2x BPM), <b>it does not change how the song is played</b>.
+                This
                 helps if the flashing is hurting your eyes. You can also adjust how long the song is playing which will
                 effect the phyllotaxy size (if that setting is enabled).
             </div>
             <div>
                 <h3>Phyllotaxy Settings:</h3>
+                <h4>BMP vs Meldoy</h4>
+                BMP based drawing will give you a lot more settigns and will draw the phyllotaxy based on the calcuated
+                BPM. Melody will disable most settings in order to draw a spiral waveform of the audio data. This draws
+                the dot sizes based on how loud the song is at any each second. Because most wavefroms are drawn as a
+                bar graph, this set up may not be very intuitive.
                 <h4>Color</h4>
                 5 different color presets (Raindow, Candy, Cool, Ocean, and Reverse Raindow). These all draw based on
                 the position of the circle in the phyllotaxy.

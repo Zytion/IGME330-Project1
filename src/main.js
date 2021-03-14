@@ -23,8 +23,9 @@ let beatsPerSecond = 124.0 / 60.0;
 let beatMultiplier = 1;
 let alpha = 1;
 let sizeSelect, circleSizeSelect, philoSizeSelect;
+let playBeats;
 
-const DEFAULT_NMAX = 384;
+const DEFAULT_NMAX = 400;
 const DEFAULT_LOOPNUM = 14;
 
 //Audio Variables
@@ -32,16 +33,14 @@ const DEFAULTS = Object.freeze({
     sound1: "media/Unknown.mp3"
 });
 
-function windowResize(){
-    if(canvasWidth == 400 && window.innerWidth > 800){
+function windowResize() {
+    if (canvasWidth == 400 && window.innerWidth > 800) {
         canvasWidth = 800, canvasHeight = 600;
     }
-    else if(canvasWidth == 800 && window.innerWidth <= 800)
-    {
+    else if (canvasWidth == 800 && window.innerWidth <= 800) {
         canvasWidth = 400, canvasHeight = 400;
     }
-    else
-    {
+    else {
         return;
     }
     let canvas = document.querySelector('canvas');
@@ -57,7 +56,7 @@ function init() {
 
     window.onresize = windowResize;
     windowResize();
-    
+
     canvas.width = canvasWidth;
     canvas.height = canvasHeight;
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
@@ -183,6 +182,32 @@ function setupUI(canvasElement, analyserNodeRef) {
         }
     };
 
+
+    playBeats = true;
+    var beatsSettings = document.querySelector("#beatsSettings");
+    var phyllotype = document.querySelectorAll('input[name="type"]');
+    phyllotype[0].checked = true;
+    for (var i = 0; i < phyllotype.length; i++) {
+        phyllotype[i].addEventListener('change', function () {
+            switch (this.id) {
+                case "melody":
+                    nMax = 512;
+                    divergence = 4;
+                    size = 4;
+                    beatsPerSecond = Math.trunc(audio.actualBPM * beatMultiplier) / 60.0;
+                    loopNum = Math.round(beatsPerSecond * nMax / 60.0 * 2.0);
+                    playBeats = false;
+                    beatsSettings.className = 'hidden';
+                    break;
+                default:
+                    beatsSettings.className = '';
+                    patternSelect.dispatchEvent(new Event('change'));
+                    playBeats = true;
+                    break;
+            }
+        });
+    }
+
     sizeSelect = document.querySelector("#sizeSelect");
     circleSizeSelect = document.querySelector("#circleSizeSelect");
     philoSizeSelect = document.querySelector("#philoSizeSelect");
@@ -227,45 +252,55 @@ function loop() {
             let loudnessAt2K = audioData[11];
             let vol = (averageLoudness / 40.0 + audio.getVolume() * 2) - 1; //goes from 2 - 4
 
-            // philoPerSecond = beatsPerSecond;
-            // dotPerFrame = loopNum;
-            // dotPerSecond = dotPerFrame * fps;
-            // secondsPerPhilo = nMax / dotPerSecond;
 
-            // secondsPerPhilo = nMax / (loopNum * fps);
-            // philoPerSecond = audio.actualBPM / 60.0;
+            if (playBeats) {
+                // philoPerSecond = beatsPerSecond;
+                // dotPerFrame = loopNum;
+                // dotPerSecond = dotPerFrame * fps;
+                // secondsPerPhilo = nMax / dotPerSecond;
 
-            //secondsPerPhilo = 1.0 / philoPerSecond;
-            //nMax / (loopNum * fps) = 1.0 / beatsPerSecond;
-            beatsPerSecond = Math.trunc(audio.actualBPM * beatMultiplier) / 60.0;
+                // secondsPerPhilo = nMax / (loopNum * fps);
+                // philoPerSecond = audio.actualBPM / 60.0;
 
-            switch (circleSizeSelect.value) {
-                case "volume":
-                    size = vol + 1;
-                    break;
-                default:
-                    size = 4;
-                    break;
+                //secondsPerPhilo = 1.0 / philoPerSecond;
+                //nMax / (loopNum * fps) = 1.0 / beatsPerSecond;
+                beatsPerSecond = Math.trunc(audio.actualBPM * beatMultiplier) / 60.0;
+
+                switch (circleSizeSelect.value) {
+                    case "volume":
+                        size = vol + 1;
+                        break;
+                    default:
+                        size = 4;
+                        break;
+                }
+
+                switch (sizeSelect.value) {
+                    case "volume":
+                        nMax = Math.round(110 * vol);
+                        break;
+                    default:
+                        nMax = DEFAULT_NMAX;
+                        break;
+                }
+
+                switch (speedSelect.value) {
+                    case "beats":
+                        loopNum = Math.round(beatsPerSecond * nMax / 60.0 * 2.0);
+                        break;
+                    default:
+                        loopNum = DEFAULT_LOOPNUM;
+                        break;
+                }
+                //fps = nMax * beatsPerSecond / loopNum;
             }
-
-            switch (sizeSelect.value) {
-                case "volume":
-                    nMax = Math.round(110 * vol);
-                    break;
-                default:
-                    nMax = DEFAULT_NMAX;
-                    break;
+            else
+            {
+                beatsPerSecond = Math.trunc(audio.actualBPM * beatMultiplier) / 60.0;
+                loopNum = Math.round(beatsPerSecond * nMax / 60.0);
+                analyserNode.getByteTimeDomainData(audioData);
+                //console.log(audioData);
             }
-
-            switch (speedSelect.value) {
-                case "beats":
-                    loopNum = Math.round(beatsPerSecond * nMax / 60.0 * 2.0);
-                    break;
-                default:
-                    loopNum = DEFAULT_LOOPNUM;
-                    break;
-            }
-            //fps = nMax * beatsPerSecond / loopNum;
         }
         //size = 4;
     }
@@ -289,6 +324,15 @@ function loop() {
                 else {
                     color = `hsla(${1 - n % hValue},100%,50%, ${alpha})`;
                 }
+
+                if(!playBeats)
+                {
+                    if(audioData[n % 128] > 120)
+                        size =  audioData[n % 128] / 200 * 10;
+                    else
+                    size =  audioData[n % 128] / 200 * 8;
+                }
+
                 createPhylotaxis(ctx, size, color, n, c);
             }
             n++;

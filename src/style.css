@@ -33,6 +33,7 @@ h4 {
 #bpmmulti {
   display: flex;
   flex-flow: row nowrap;
+  max-height: 1em;
 }
 #bpmmulti > * {
   margin-right: 5px;
@@ -149,6 +150,10 @@ button[data-playing="no"]:after{
 
 #opacitySlider {
   max-width: 10em;
+}
+
+.hidden {
+  display: none;
 }
 
 @media only screen and (max-width: 800px) {
