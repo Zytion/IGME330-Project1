@@ -10,7 +10,7 @@ let element, sourceNode, analyserNode, gainNode, actualBPM;
 
 let filterThreshold = 0.6;
 let skipRate = 2000;
-let bpmText;
+let bpmText, playButton;
 let confidenceText;
 let confidence = 0;
 // 3 - here we are faking an enumeration
@@ -27,6 +27,7 @@ let audioData = new Uint8Array(DEFAULTS.numSamples / 2);
 function setupWebaudio(filePath) {
     bpmText = document.querySelector('#BPM');
     confidenceText = document.querySelector('#confidence');
+    playButton = document.querySelector('#playButton');
 
     // 1 - The || is because WebAudio has not been standardized across browsers yet
     const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -70,6 +71,7 @@ function setupWebaudio(filePath) {
 
 //Begins loading the sound file
 function loadSoundFile(filePath) {
+    playButton.disabled = true;
     bpmText.textContent = `Loading...`;
     confidenceText.textContent = "";
     element.src = filePath;
@@ -162,6 +164,7 @@ function getBPM(buffer) {
         //Stop looping calculation if the threshold drops below 0
         if(filterThreshold <= 0)
         {
+            playButton.disabled = false;
             actualBPM = 120;
             bpmText.textContent = `BPM = NaN (Using 120 BPM)`;
             confidenceText.textContent = "Confidence = NaN";
@@ -182,6 +185,9 @@ function getBPM(buffer) {
         confidence = ((top[0].count - top[1].count) * 2) < 100 ? ((top[0].count - top[1].count) * 2) : 100;
         //Get the BPM
         actualBPM = Math.round(top[0].tempo);
+
+        playButton.disabled = false;
+
         //Update the text with the new values
         bpmText.innerHTML = `BPM = ${actualBPM}`;
         confidenceText.textContent = `Confidence = ${confidence}%`;

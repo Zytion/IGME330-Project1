@@ -148,7 +148,7 @@ button[data-playing="no"]:after{
 }
 
 #opacitySlider {
-  max-width: 10em;
+  max-width: 9em;
 }
 
 .hidden {

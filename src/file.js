@@ -1,9 +1,8 @@
-
 var songList = [];
 var reader;
 
-/*NOT ADDED
-Reading songs stored in local storage*/
+
+//Initilizes reader and reads songs stored in local storage 
 function readSongList() {
     reader = new FileReader();
     if (typeof (Storage) !== "undefined") {
@@ -55,6 +54,7 @@ function readFile(e) {
                 };
                 songList.push(song);
 
+                //DISABLED TO PREVENT ERRORS
                 ////Store the song list to local storage
                 // try {
                 //     localStorage.setItem('songlist', JSON.stringify(songList));

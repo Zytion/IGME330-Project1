@@ -64,8 +64,8 @@ function init() {
     canvas.height = canvasHeight;
     ctx.fillRect(0, 0, canvasWidth, canvasHeight);
 
-    // //Load any stored songs from local storage
-    // file.readSongList();
+    //Load any stored songs from local storage and initalizes file reader
+    file.readSongList();
 
     //Audio
     setupUI(canvas, audio.analyserNode);
