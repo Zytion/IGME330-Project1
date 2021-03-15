@@ -153,12 +153,6 @@ function setupUI(canvasElement, analyserNodeRef) {
         file.readFile(e);
     };
 
-    // //hook up clear cache button
-    // let clearButton = document.querySelector("#clearButton");
-    // clearButton.onclick = e => {
-    //     localStorage.clear();
-    // }
-
     //hook up color select
     let colorSelect = document.querySelector("#colorSelect");
     colorSelect.selectedIndex = 0;
@@ -226,13 +220,13 @@ function setupUI(canvasElement, analyserNodeRef) {
     //hook up opacity slider
     let opacitySlider = document.querySelector("#opacitySlider");
     let opacityLabel = document.querySelector("#opacityLabel");
-
     opacitySlider.oninput = e => {
         alpha = e.target.value;
         opacityLabel.innerHTML = Math.round(e.target.value * 100) + '%';
     };
     opacitySlider.dispatchEvent(new Event("input"));
 
+    //finally, hook up audio
     analyserNode = analyserNodeRef;
 
     // 1) create a byte array (values of 0-255) to hold the audio data
@@ -267,7 +261,7 @@ function loop() {
             let vol = (averageLoudness - 80) / 15.0 + audio.getVolume() * 2;
             vol = vol > 0.5 ? vol : 0.5;
 
-
+            //PLAY BPM
             if (playBeats) {
                 /*CACLULATIONS
                 // philoPerSecond = beatsPerSecond;
@@ -311,6 +305,7 @@ function loop() {
                 }
                 //fps = nMax * beatsPerSecond / loopNum;
             }
+            //PLAY MELODY
             else {
                 beatsPerSecond = Math.trunc(audio.actualBPM * beatMultiplier) / 60.0;
                 loopNum = Math.round(beatsPerSecond * nMax / 60.0);
@@ -325,7 +320,25 @@ function loop() {
         //loopNum is used to 
         for (let loop = 0; loop < loopNum; loop++) {
             if (n < nMax) {
-                //choosing colors
+                //choosing colors, this needs to be here so each circle changes color
+                switch (colorChosen) {
+                    case "rainbow":
+                        color = `hsla(${n % hValue},100%,50%, ${alpha})`;
+                        break;
+                    case "candy":
+                        color = `rgba(${n % hValue + 55}, 0, ${200 - (n % hValue) / 2}, ${alpha})`;
+                        break;
+                    case "cool":
+                        color = `rgba(${75 + (n % hValue / 3)}, ${n % hValue}, ${220 - (n % hValue) / 2}, ${alpha})`;
+                        break;
+                    case "ocean":
+                        color = `rgba(0, ${85 - (n % hValue) / 4}, ${n % hValue + 55}, ${alpha})`;
+                        break;
+                    case "reverse":
+                        color = `hsla(${1 - n % hValue},100%,50%, ${alpha})`;
+                        break;
+                    }
+                /*
                 if (colorChosen == "rainbow") {
                     color = `hsla(${n % hValue},100%,50%, ${alpha})`;
                 }
@@ -341,6 +354,7 @@ function loop() {
                 else {
                     color = `hsla(${1 - n % hValue},100%,50%, ${alpha})`;
                 }
+                */
                 //Melody drawing
                 if (!playBeats) {
                     //This is used to exagerate the smaller and larger values
@@ -350,20 +364,17 @@ function loop() {
                         size = audioData[n % 128] / 200 * 8;
                 }
 
-                //Draw circle
-                createPhylotaxis(ctx, size, color, n, c);
+                //Draw the phyllotaxis circle
+                createPhyllotaxis(ctx, size, color, n, c);
             }
             n++;
-            //c += 0.01;
         }
     }
     setTimeout(loop, 1000 / fps);
 }
 
-function createPhylotaxis(ctx, size, color, n, c) {
-    //for (let i = 0; i < repeater; ++i) {
-    //Reset when n reaches 1500
-    // each frame draw a new dot
+//create a phyllotaxis based on the size, color, n, and c values
+function createPhyllotaxis(ctx, size, color, n, c) {
     // `a` is the angle
     // `r` is the radius from the center (e.g. "Pole") of the flower
     // `c` is the "padding/spacing" between the dots
@@ -375,8 +386,6 @@ function createPhylotaxis(ctx, size, color, n, c) {
     let y = r * Math.sin(a) + canvasHeight / 2 + offsetY;
 
     utils.drawCircle(ctx, x, y, size, color);
-    //}
-
 }
 
 export { init };
