@@ -264,7 +264,7 @@ function loop() {
             //console.log(audio.getVolume()); //0 - 2
             //console.log(averageLoudness); //60 - 120
 
-            let vol = (averageLoudness - 80) / 15.0 + audio.getVolume();
+            let vol = (averageLoudness - 80) / 15.0 + audio.getVolume() * 2;
             vol = vol > 0.5 ? vol : 0.5;
 
 
