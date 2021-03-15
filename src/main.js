@@ -261,7 +261,11 @@ function loop() {
             // 22050 kHz divided by 128 bins = 172.23 kHz per bin
             // the 12th element in array represents loudness at 2.067 kHz
             let loudnessAt2K = audioData[11];
-            let vol = (averageLoudness / 40.0 + audio.getVolume() * 2) - 1; //goes from 2 - 4
+            //console.log(audio.getVolume()); //0 - 2
+            //console.log(averageLoudness); //60 - 120
+
+            let vol = (averageLoudness - 80) / 15.0 + audio.getVolume();
+            vol = vol > 0.5 ? vol : 0.5;
 
 
             if (playBeats) {
